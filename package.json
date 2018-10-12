@@ -1,0 +1,21 @@
+{
+  "name": "gmschedulerbot",
+  "version": "0.1.0",
+  "description": "A scheduler bot for GroupMe",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Daniel Royer",
+  "homepage": "https://github.com/2CATteam/gmschedulerbot.git",
+  "bugs": "https://github.com/2CATteam/gmschedulerbot.git",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2CATteam/gmschedulerbot.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "npm": "^6.4.1"
+  }
+}
