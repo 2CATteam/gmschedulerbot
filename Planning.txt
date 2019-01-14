@@ -1,0 +1,33 @@
+User interaction:
+	0. .com allows for scheduling
+		Ask for token, select chat, type message and time
+	1. bot.com allows for bot making
+		Begin by choosing ID. If already there, return error. If not, create. Redirect to new path.
+		Prompt to make bot in GM, and ask for bot ID.
+		Test for success by sending intro message. If pass, continue to normal bot.com/id activity. If fail, reset back to previous step.
+	2. bot.com/id allows for scheduling messages
+		Space for setting date and time for message
+		Space for setting message text
+		Space for name, if desired
+		Button to schedule
+		Button to delete bot
+		Button to create new bot
+	3. /bot in GM for information on ID, link to scheduler
+		"Looks like someone is asking for help on how to use me!
+		
+		I'm a scheduler bot. That means you can use me to schedule messages for sending out later! For example, schedule a message for 8:00am wishing your friends a wonderful day!
+		
+		My Bot ID is ______. That means that, to schedule messages, you can go to ____.com/____ and use the form there.
+		
+		As you just saw, type /bot to see this message again! If you have any questions or suggestions, feel free to email the dev at 2CATteam@gmail.com"
+
+Checkpoints:
+
+	1. Make a server on laptop that can serve static html and run GroupMe bots
+	DONE
+	2. Make a server on laptop that can send a message at some time as separate module
+	
+	3. Add storage functionality as separate module
+	
+	4. Make web form to add message to schedule
+	

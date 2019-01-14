@@ -1,3 +1,23 @@
 <html>
-<p>Hello! Welcome to the app!</p>
+<h1>GroupMe Message Scheduler</h1>
+
+<p>Step 1. Enter your GroupMe Token</p>
+<input type="text" id="tokenBox" placeholder = "GroupMe Token">
+<button onclick="updateBasedOnToken()">Enter</button>
+<br/>
+
+<p>Step 2. Select the chat to send the message to</p>
+<select id="Select"><option id=placeholderOption value=false>-Please enter your token-</option></select>
+<br/>
+
+<p>Step 3. Select when to send the message</p>
+<input type="date" id="date">
+<input type="time" id="time">
+<br/>
+
+<p>Step 4. Type your message</p>
+<textarea rows="5" cols="100" placeholder="Type your message here (max 1000 characters)..."></textarea>
+
+<script src="webscripts.js"></script>
+
 </html>
