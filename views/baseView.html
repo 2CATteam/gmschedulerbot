@@ -1,22 +1,27 @@
 <html>
 <h1>GroupMe Message Scheduler</h1>
 
-<p>Step 1. Enter your GroupMe Token</p>
-<input type="text" id="tokenBox" placeholder = "GroupMe Token">
-<button onclick="updateBasedOnToken()">Enter</button>
+<p>Step 1. Authenticate with GroupMe</p>
+<p id="completionLocation"> </p>
+<a href="https://oauth.groupme.com/oauth/authorize?client_id=J9J4U14d6D6ZWZxk511T7mlec2hWWIR3DMDtmjzc1Efxi0wm">Click here to log in with GroupMe!</a>
 <br/>
 
 <p>Step 2. Select the chat to send the message to</p>
-<select id="Select"><option id=placeholderOption value=false>-Please enter your token-</option></select>
+<select id="Select"><option id=placeholderOption value="Invalid">-Please enter your token-</option></select>
 <br/>
 
-<p>Step 3. Select when to send the message</p>
+<p>Step 3. Select when to send the message. (Note: If you schedule multiple messages for a single time, only one of them will send.</p>
 <input type="date" id="date">
 <input type="time" id="time">
 <br/>
 
 <p>Step 4. Type your message</p>
-<textarea rows="5" cols="100" placeholder="Type your message here (max 1000 characters)..."></textarea>
+<textarea id="toSend" rows="5" cols="100" placeholder="Type your message here (max 1000 characters)..."></textarea>
+<p id="ErrorLocation"></p>
+<button onclick="submit()">Schedule Message!</button>
+
+<h3>Previously Scheduled Messages:</h3>
+<div id="scheduled"></div>
 
 <script src="webscripts.js"></script>
 
