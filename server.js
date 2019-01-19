@@ -4,7 +4,6 @@ const express = require('express')
 const app = express()
 const path = require('path')
 const https = require('https')
-const fs = require('fs')
 const cookieParser = require('cookie-parser')
 const url = require('url')
 const port = 443
@@ -104,8 +103,6 @@ app.post('/deleteMessage/', (req, res) =>
 });
 
 const httpsOptions = {
-  key: fs.readFileSync('./localhost.key'),
-  cert: fs.readFileSync('./localhost.crt')
 }
 
-const server = https.createServer(httpsOptions, app).listen(port, () => console.log(`Example app listening on port ${port}!`))
+const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`))

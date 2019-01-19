@@ -15,6 +15,7 @@ function updateBasedOnToken() {
 		if (data.chats.length == 0)
 		{
 			showError("There was an error authenticating your account. Please try again.");
+			return;
 		}
 		for (var x in data.chats)
 		{
@@ -25,6 +26,14 @@ function updateBasedOnToken() {
 		}
 		var toDelete = document.getElementById("placeholderOption");
 		dropdown.removeChild(toDelete);
+		
+		dropdown.disabled = false;
+		document.getElementById("completionLocation").innerHTML = "Authentication was a success! You can now schedule a message.";
+		document.getElementById("date").disabled = false;
+		document.getElementById("time").disabled = false;
+		document.getElementById("toSend").disabled = false;
+		
+		
 		updateMessages(data);
 	};
 }
@@ -133,30 +142,33 @@ function updateMessages(data)
 	for (var x in data.messages)
 	{
 		var subDiv = document.createElement("div");
+		subDiv.setAttribute("class", "subDiv");
 		
 		var groupText = document.createElement("p");
-		groupText.setAttribute("class", "groupText")
-		groupText.innerHTML = data.chats[data.messages[x].group];
+		groupText.setAttribute("class", "groupText");
+		groupText.innerHTML = "<b>Chat: </b>" + data.chats[data.messages[x].group];
 		subDiv.appendChild(groupText);
 		
 		var tempDate = new Date(data.messages[x].time);
 		var timeText = document.createElement("p");
 		timeText.setAttribute("class", "timeText");
-		timeText.innerHTML = tempDate.toLocaleString();
+		timeText.innerHTML = "<b>Time: </b>" + tempDate.toLocaleString();
 		subDiv.appendChild(timeText);
 		
 		var textText = document.createElement("p");
-		textText.setAttribute("class", "textText")
-		textText.innerHTML = data.messages[x].toSend;
+		textText.setAttribute("class", "textText");
+		textText.innerHTML = "<b>Message: </b>" + data.messages[x].toSend;
 		subDiv.appendChild(textText);
 		
 		var cancelButton = document.createElement("button");
-		cancelButton.setAttribute("onclick", "deleteMessage(this)")
+		cancelButton.setAttribute("onclick", "deleteMessage(this)");
 		cancelButton.innerHTML = "Cancel message";
 		
 		subDiv.appendChild(cancelButton);
 		
 		document.getElementById("scheduled").appendChild(subDiv);
+		
+		document.getElementById("messagesLabel").hidden = false;
 	}
 }
 

@@ -1,0 +1,83 @@
+* {
+	font-family: Arial;
+	font-size: 1em;
+	max-width: 100%;
+}
+
+p, select, input, textarea, button, a, h3 {
+	font-size: 1.25em;
+}
+
+h1 {
+	font-size: 2em;
+	text-align: center;
+}
+
+#StupidADiv {
+	text-align: center;
+	margins: auto;
+}
+
+a {
+	font-weight: bold;
+	text-align: center;
+}
+
+body {
+	background-color: DeepSkyBlue;
+}
+
+#MainBody {
+	margin: 25px 5% 25px 5%;
+	padding: 25px 5% 25px 5%;
+	border-style: hidden;
+	border-width: 2px;
+	border-radius: 30px;
+	background-color: white;
+}
+
+@media only screen and (min-width: 1000px) and (max-height: 1000px)
+{
+	#MainBody {
+		margin: 25px 10% 25px 10%;
+		padding: 25px 5% 25px 5%;
+		border-style: hidden;
+		border-width: 2px;
+		border-radius: 30px;
+		background-color: white;
+	}
+}
+
+@media only screen and (min-width: 1500px) and (max-height: 1000px)
+{
+	#MainBody {
+		margin: 25px 20% 25px 20%;
+		padding: 25px 5% 25px 5%;
+		border-style: hidden;
+		border-width: 2px;
+		border-radius: 30px;
+		background-color: white;
+	}
+}
+
+#toSend {
+	max-width: 100%;
+}
+
+#completionLocation {
+	text-align: center;
+	color: green;
+}
+
+#ErrorLocation {
+	text-align: center;
+	color: red;
+}
+
+.subDiv {
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 10px;
+	padding: 0 5% 1.25em 5%;
+	margin: 0 0 1.25em 0;
+}

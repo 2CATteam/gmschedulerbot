@@ -1,28 +1,45 @@
+<!DOCTYPE html>
 <html>
+<head>
+	<link rel="stylesheet" href="styles.css">
+	<title>GroupMe scheduling service</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Tool for scheduling messages on GroupMe">
+	<meta name="keywords" content="GroupMe,message,schedule,scheduler,bot,free,service">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div id="MainBody">
 <h1>GroupMe Message Scheduler</h1>
 
 <p>Step 1. Authenticate with GroupMe</p>
 <p id="completionLocation"> </p>
+<div id="StupidADiv">
 <a href="https://oauth.groupme.com/oauth/authorize?client_id=J9J4U14d6D6ZWZxk511T7mlec2hWWIR3DMDtmjzc1Efxi0wm">Click here to log in with GroupMe!</a>
+</div>
 <br/>
 
 <p>Step 2. Select the chat to send the message to</p>
-<select id="Select"><option id=placeholderOption value="Invalid">-Please enter your token-</option></select>
+<select id="Select" disabled>
+	<option id=placeholderOption value="Invalid">-Please log in first-</option>
+</select>
 <br/>
 
-<p>Step 3. Select when to send the message. (Note: If you schedule multiple messages for a single time, only one of them will send.</p>
-<input type="date" id="date">
-<input type="time" id="time">
+<p>Step 3. Select when to send the message. (Note: If you schedule multiple messages in one chat for a single time, only one of them will send.)</p>
+<input type="date" id="date" disabled>
+<input type="time" id="time" disabled>
 <br/>
 
 <p>Step 4. Type your message</p>
-<textarea id="toSend" rows="5" cols="100" placeholder="Type your message here (max 1000 characters)..."></textarea>
+<textarea disabled id="toSend" rows="5" cols="50" placeholder="Type your message here (max 1000 characters)..."></textarea>
 <p id="ErrorLocation"></p>
 <button onclick="submit()">Schedule Message!</button>
 
-<h3>Previously Scheduled Messages:</h3>
+<h3 id="messagesLabel" hidden>Previously Scheduled Messages:</h3>
 <div id="scheduled"></div>
 
 <script src="webscripts.js"></script>
 
+</div>
+</body>
 </html>
