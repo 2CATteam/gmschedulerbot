@@ -6,7 +6,7 @@ const path = require('path')
 const https = require('https')
 const cookieParser = require('cookie-parser')
 const url = require('url')
-const port = 443
+const port = 3000
 
 var sender = require('./lib/MessageSender');
 var schedulerFile = require('./lib/MessageScheduler');
@@ -102,7 +102,6 @@ app.post('/deleteMessage/', (req, res) =>
 	});
 });
 
-const httpsOptions = {
-}
+scheduler.restoreBackup();
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`))
