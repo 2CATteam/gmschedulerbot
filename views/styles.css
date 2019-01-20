@@ -79,6 +79,11 @@ body {
 	color: red;
 }
 
+#SuccessLocation {
+	text-align: center;
+	color: green;
+}
+
 .subDiv {
 	border-style: solid;
 	border-width: 1px;

@@ -61,6 +61,7 @@ function submit() {
 			request.onload = () => {
 				const data = JSON.parse(request.response);
 				updateMessages(data);
+				showSuccess();
 			}
 		});
 	});
@@ -176,6 +177,14 @@ function updateMessages(data)
 function showError(toShow)
 {
 	document.getElementById("ErrorLocation").innerHTML = "ERROR: " + toShow;
+	document.getElementById("SuccessLocation").innerHTML = "";
+}
+
+function showSuccess()
+{
+	document.getElementById("ErrorLocation").innerHTML = "";
+	document.getElementById("SuccessLocation").innerHTML = "Success! Your message has been scheduled and you can view or cancel it below.";
+	document.getElementById("This").value = "";
 }
 
 window.onload = updateBasedOnToken;
