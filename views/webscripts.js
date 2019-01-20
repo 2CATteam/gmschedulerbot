@@ -105,7 +105,7 @@ function deleteMessage(button)
 	
 	var groupID = 0;
 	var options = document.getElementById("Select").children;
-	const searchText = pList[0].innerText;
+	const searchText = pList[0].innerText.split("Chat: ")[1];
 	for (var choice = 0; choice < options.length; ++choice)
 	{
 		if (options[choice].innerText === searchText)
@@ -116,9 +116,10 @@ function deleteMessage(button)
 	if (groupID == 0)
 	{
 		console.log("Unable to find chat in list");
-		console.log(pList[0].innerHTML);
+		console.log(searchText);
 		console.log(options);
 	}
+	let dateData = new Date(pList[1].innerHTML.split("<b>Time: </b>")[1]);
 	
 	var request = new XMLHttpRequest();
 	request.open("POST", window.location.href + "deleteMessage/");
@@ -126,8 +127,8 @@ function deleteMessage(button)
 	const toSend = JSON.stringify({
 		token: token,
 		chat: groupID,
-		time: pList[1].innerHTML,
-		toSend: pList[2].innerHTML
+		time: dateData.toISOString(),
+		toSend: pList[2].innerHTML.split("<b>Message: </b>")[1]
 	})
 	request.send(toSend);
 	request.onload = () => {
