@@ -47,7 +47,7 @@ function submit() {
 			var token = cookie.split("token=")[1]
 			var dateVal = document.getElementById("date").value;
 			var timeVal = document.getElementById("time").value;
-			var datetime = new Date(dateVal + "T" + timeVal + ":00");
+			var datetime = dateFromStrings(dateVal, timeVal);
 			var request = new XMLHttpRequest();
 			request.open("POST", window.location.href + "submitMessage/");
 			request.setRequestHeader('Content-Type', 'application/json');
@@ -90,7 +90,7 @@ function validCheck(callback)
 	}
 	var dateVal = document.getElementById("date").value;
 	var timeVal = document.getElementById("time").value;
-	var datetime = new Date(dateVal + "T" + timeVal + ":00");
+	var datetime = dateFromStrings(dateVal, timeVal);
 	if (datetime < new Date())
 	{showError("Message cannot be scheduled for the past.")}
 	else if (document.getElementById("toSend").value.length > 1000)
@@ -174,6 +174,21 @@ function updateMessages(data)
 	}
 }
 
+function dateFromStrings(date, time)
+{
+	let dateSplit = date.split("-");
+	let timeSplit = time.split(":");
+	let ints = [
+		parseInt(dateSplit[0]),
+		parseInt(dateSplit[1]),
+		parseInt(dateSplit[2]),
+		parseInt(timeSplit[0]),
+		parseInt(timeSplit[1])
+	];
+	var toReturn = new Date(ints[0], ints[1]-1, ints[2], ints[3], ints[4]);
+	return toReturn;
+}
+
 function showError(toShow)
 {
 	document.getElementById("ErrorLocation").innerHTML = "ERROR: " + toShow;
@@ -194,18 +209,15 @@ function debug()
 	debugString += "\n";
 	debugString += document.getElementById("time").value;
 	debugString += "\n";
-	debugString += "Date parsed: ";
+	debugString += "Date currently: ";
 	let toCompareDate = new Date();
 	debugString += toCompareDate.toISOString();
 	debugString += "\n Form of existing is as follows: ";
-	debugString += document.getElementById("date").value;
-	debugString += "T";
-	debugString += document.getElementById("time").value;
-	debugString += ":00";
+	let debugDate = dateFromStrings(document.getElementById("date").value, document.getElementById("time").value);
+	debugString += debugDate.toISOString();
 	debugString += "\n";
 	debugString += "Compare current, ";
 	debugString += toCompareDate.getTime();
-	let debugDate = new Date(document.getElementById("date").value + "T" + document.getElementById("time").value + ":00");
 	debugString += "To parsed value from fields, ";
 	debugString += debugDate.getTime();
 	document.getElementById("ErrorLocation").innerHTML = debugString;
