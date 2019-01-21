@@ -6,7 +6,7 @@ function updateBasedOnToken() {
 		return;
 	}
 	var request = new XMLHttpRequest();
-	request.open("POST", window.location.href + "getInfo/");
+	request.open("POST", "https://www.schmessage.com/getInfo/");
 	request.setRequestHeader('Content-Type', 'application/json');
 	request.send(JSON.stringify({token: token})); 
 	request.onload = () => {
@@ -184,7 +184,31 @@ function showSuccess()
 {
 	document.getElementById("ErrorLocation").innerHTML = "";
 	document.getElementById("SuccessLocation").innerHTML = "Success! Your message has been scheduled and you can view or cancel it below.";
-	document.getElementById("This").value = "";
+	document.getElementById("toSend").value = "";
+}
+
+function debug()
+{
+	var debugString = "";
+	debugString += document.getElementById("date").value;
+	debugString += "\n";
+	debugString += document.getElementById("time").value;
+	debugString += "\n";
+	debugString += "Date parsed: ";
+	let toCompareDate = new Date();
+	debugString += toCompareDate.toISOString();
+	debugString += "\n Form of existing is as follows: ";
+	debugString += document.getElementById("date").value;
+	debugString += "T";
+	debugString += document.getElementById("time").value;
+	debugString += ":00";
+	debugString += "\n";
+	debugString += "Compare current, ";
+	debugString += toCompareDate.getTime();
+	let debugDate = new Date(document.getElementById("date").value + "T" + document.getElementById("time").value + ":00");
+	debugString += "To parsed value from fields, ";
+	debugString += debugDate.getTime();
+	document.getElementById("ErrorLocation").innerHTML = debugString;
 }
 
 window.onload = updateBasedOnToken;

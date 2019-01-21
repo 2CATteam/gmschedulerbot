@@ -30,9 +30,9 @@ app.get('/authenticate/?', (req, res) =>
 	res.redirect("/");
 });
 
-app.post('/schedule/', (req, res) =>
+app.get('/debugPrint/', (req, res) =>
 {
-	res.sendFile(path.join(__dirname + '/views/addView2.html'))
+	res.sendFile(path.join(__dirname + '/views/debugView.html'))
 });
 
 app.post('/getInfo/', (req, res) =>
