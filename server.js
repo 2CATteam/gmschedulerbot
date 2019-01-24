@@ -7,6 +7,7 @@ const https = require('https')
 const cookieParser = require('cookie-parser')
 const url = require('url')
 const port = 3000
+var favicon = require('serve-favicon');
 
 var sender = require('./lib/MessageSender');
 var schedulerFile = require('./lib/MessageScheduler');
@@ -18,6 +19,7 @@ const testMessageID = "154710840693462940"
 
 app.use(cookieParser());
 app.use(express.static(__dirname + '/views'));
+app.use(favicon(__dirname + '/views/favicon.ico'));
 
 app.get('/', (req, res) => 
 {
