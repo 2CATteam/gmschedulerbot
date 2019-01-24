@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" type="text/css" href="styles.css">
 	<title>GroupMe scheduling service</title>
 	<meta charset="UTF-8">
 	<meta name="description" content="Tool for scheduling messages on GroupMe">
@@ -15,7 +15,7 @@
 
 <p>Step 1. Authenticate with GroupMe</p>
 <p id="completionLocation"> </p>
-<div id="StupidADiv">
+<div class="StupidADiv">
 <a href="https://oauth.groupme.com/oauth/authorize?client_id=J9J4U14d6D6ZWZxk511T7mlec2hWWIR3DMDtmjzc1Efxi0wm">Click here to log in with GroupMe!</a>
 </div>
 <br/>
@@ -26,22 +26,30 @@
 </select>
 <br/>
 
-<p>Step 3. Select when to send the message. (Note: If you schedule multiple messages in one chat for a single time, only one of them will send.)</p>
-<input type="date" id="date" disabled>
-<input type="time" id="time" disabled>
+<p>Step 3. Select when to send the message. (Note: If you schedule multiple messages in one chat for a single time, they will be sent in the order they are submitted.)</p>
+<div class="DateTimeDiv">
+<p class="DateTimeText">Date:  </p><input type="date" id="date" disabled>
+</div>
+<div class="DateTimeDiv">
+<p class="DateTimeText">Time:  </p><input type="time" id="time" disabled>
+</div>
 <br/>
 
 <p>Step 4. Type your message</p>
 <textarea disabled id="toSend" rows="5" cols="50" placeholder="Type your message here (max 1000 characters)..."></textarea>
 <p id="ErrorLocation"></p>
 <p id="SuccessLocation"></p>
-<button onclick="debug()">Print debug info!</button>
+<button onclick="debug()">Schedule Message!</button>
 
 <h3 id="messagesLabel" hidden>Previously Scheduled Messages:</h3>
 <div id="scheduled"></div>
 
-<script src="webscripts.js"></script>
+<br/>
+<div class="StupidADiv">
+<a href="https://www.schmessage.com/faq">Have a question? It may be answered here!</a>
+</div>
 
+<script type="text/javascript" src="webscripts.js"></script>
 </div>
 </body>
 </html>

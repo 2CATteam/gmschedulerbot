@@ -18,7 +18,7 @@ h1 {
 	text-align: center;
 }
 
-#StupidADiv {
+.StupidADiv {
 	text-align: center;
 	margins: auto;
 }
@@ -90,4 +90,13 @@ body {
 	border-radius: 10px;
 	padding: 0 5% 1.25em 5%;
 	margin: 0 0 1.25em 0;
+}
+
+.DateTimeDiv {
+	display: flex;
+}
+
+.DateTimeText {
+	line-height: 0;
+	width: 60px;
 }

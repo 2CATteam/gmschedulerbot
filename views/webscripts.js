@@ -205,21 +205,30 @@ function showSuccess()
 function debug()
 {
 	var debugString = "";
-	debugString += document.getElementById("date").value;
-	debugString += "\n";
-	debugString += document.getElementById("time").value;
-	debugString += "\n";
-	debugString += "Date currently: ";
-	let toCompareDate = new Date();
-	debugString += toCompareDate.toISOString();
-	debugString += "\n Form of existing is as follows: ";
-	let debugDate = dateFromStrings(document.getElementById("date").value, document.getElementById("time").value);
-	debugString += debugDate.toISOString();
-	debugString += "\n";
-	debugString += "Compare current, ";
-	debugString += toCompareDate.getTime();
-	debugString += "To parsed value from fields, ";
-	debugString += debugDate.getTime();
+	debugString += document.cookie;
+	debugString += "\n \n";
+	if (document.getElementById("date").value && document.getElementById("time").value)
+	{
+		debugString += document.getElementById("date").value;
+		debugString += "\n";
+		debugString += document.getElementById("time").value;
+		debugString += "\n";
+		debugString += "Date currently: ";
+		let toCompareDate = new Date();
+		debugString += toCompareDate.toISOString();
+		debugString += "\n Form of existing is as follows: ";
+		let debugDate = dateFromStrings(document.getElementById("date").value, document.getElementById("time").value);
+		debugString += debugDate.toISOString();
+		debugString += "\n";
+		debugString += "Compare current, ";
+		debugString += toCompareDate.getTime();
+		debugString += "To parsed value from fields, ";
+		debugString += debugDate.getTime();
+	}
+	debugString += "\n \n";
+	debugString += document.getElementById("Select").innerHTML;
+	debugString += "\n \n";
+	debugString += document.getElementById("toSend").value;
 	document.getElementById("ErrorLocation").innerHTML = debugString;
 }
 

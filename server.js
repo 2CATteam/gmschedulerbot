@@ -17,7 +17,7 @@ const testGroupID = "14538582"
 const testMessageID = "154710840693462940"
 
 app.use(cookieParser());
-app.use(express.static('views'));
+app.use(express.static(__dirname + '/views'));
 
 app.get('/', (req, res) => 
 {
@@ -33,6 +33,11 @@ app.get('/authenticate/?', (req, res) =>
 app.get('/debugPrint/', (req, res) =>
 {
 	res.sendFile(path.join(__dirname + '/views/debugView.html'))
+});
+
+app.get('/faq/', (req, res) =>
+{
+	res.sendFile(path.join(__dirname + '/views/faqView.html'))
 });
 
 app.post('/getInfo/', (req, res) =>
