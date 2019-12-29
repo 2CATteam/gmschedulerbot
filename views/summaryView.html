@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<title>GroupMe scheduling service</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Tool for scheduling messages on GroupMe">
+	<meta name="keywords" content="GroupMe,message,schedule,scheduler,bot,free,service">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div id="MainBody">
+<h1>GroupMe chat summary</h1>
+<p id="Description">See who's talked the most in your GroupMe chats.</p>
+
+<p>Step 1. Authenticate with GroupMe</p>
+<p id="completionLocation"> </p>
+<div class="StupidADiv">
+<a href="https://oauth.groupme.com/oauth/authorize?client_id=J9J4U14d6D6ZWZxk511T7mlec2hWWIR3DMDtmjzc1Efxi0wm">Click here to log in with GroupMe!</a>
+</div>
+<br/>
+
+<p>Step 2. Select the chat to summarize</p>
+<select id="Select" disabled>
+	<option id="placeholderOption" value="Invalid">-Please log in first-</option>
+</select>
+<br>
+
+<p id="ErrorLocation"></p>
+<p id="ProgressLocation"></p>
+<p>Your chat's information will be shown below as it is fetched.</p>
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Messages sent</th>
+		<th>Attachments sent</th>
+		<th>Likes received</th>
+		<th>Likes given</th>
+		<th>Average characters/message</th>
+		<th>Nicknames</th>
+	</tr>
+</table>
+
+<script type="text/javascript" src="summaryscripts.js"></script>
+</div>
+</body>
+</html>

@@ -4,8 +4,16 @@
 	max-width: 100%;
 }
 
-p, select, input, textarea, button, a, h3 {
+p, select, input, textarea, button, a, h3, label {
 	font-size: 1.25em;
+}
+
+#chatButton {
+	margin: 0 0 10px 0;
+}
+
+#dmButton {
+        margin: 10px 0 10px 0;
 }
 
 h1 {
