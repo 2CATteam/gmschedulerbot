@@ -7,6 +7,9 @@
 	<meta name="description" content="Tool for scheduling messages on GroupMe">
 	<meta name="keywords" content="GroupMe,message,schedule,scheduler,bot,free,service">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script type="text/javascript" src="aggregator.js"></script>
+	<script type="text/javascript" src="summaryscripts.js"></script>
 </head>
 <body>
 <div id="MainBody">
@@ -26,23 +29,23 @@
 </select>
 <br>
 
+<button id="Submit" disabled>Begin summary!</button>
+
 <p id="ErrorLocation"></p>
 <p id="ProgressLocation"></p>
 <p>Your chat's information will be shown below as it is fetched.</p>
 
 <table>
-	<tr>
+	<tr class="tableHead">
 		<th>Name</th>
 		<th>Messages sent</th>
-		<th>Attachments sent</th>
+		<th>Images sent</th>
 		<th>Likes received</th>
 		<th>Likes given</th>
 		<th>Average characters/message</th>
-		<th>Nicknames</th>
 	</tr>
 </table>
 
-<script type="text/javascript" src="summaryscripts.js"></script>
 </div>
 </body>
 </html>

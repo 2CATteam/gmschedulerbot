@@ -23,11 +23,24 @@ app.get('/', (req, res) =>
 	res.sendFile(path.join(__dirname + '/views/baseView.html'))
 });
 
-//Authentication just adds a cooke and then redirects
+//Authentication just adds a cookie and then redirects
 app.get('/authenticate/?', (req, res) =>
 {
 	res.cookie('token', req.query.access_token);
 	res.redirect("/");
+});
+
+//Summary website just gives summary screen
+app.get('/summary/?', (req, res) =>
+{
+	res.sendFile(path.join(__dirname + '/views/baseView.html'))
+});
+
+//Authentication just adds a cookie and then redirects
+app.get('/summary/authenticate/?', (req, res) =>
+{
+	res.cookie('token', req.query.access_token);
+	res.redirect("/summary/");
 });
 
 //Debug view, just to figure stuff out
@@ -65,14 +78,14 @@ app.post('/getInfo/', (req, res) =>
 		sender.getChats(infoJson.token, function(returnValue) {
 			//Returns info
 			sender.getDMs(infoJson.token, function(returnValue2) {
-                                returnValue["DMs"] = returnValue2["DMs"]
-                                const toSend = {
-                                        info: returnValue,
-                                        messages: messages
-                                };
-                                console.log(toSend);
-                                res.end(JSON.stringify(toSend));
-                        });
+				returnValue["DMs"] = returnValue2["DMs"]
+				const toSend = {
+					info: returnValue,
+					messages: messages
+				};
+				console.log(toSend);
+				res.end(JSON.stringify(toSend));
+			});
 		});
 	});
 });
@@ -121,14 +134,14 @@ app.post('/deleteMessage/', (req, res) =>
 		const messages = scheduler.getMessages(infoJson.token);
 		sender.getChats(infoJson.token, function(returnValue) {
 			sender.getDMs(infoJson.token, function(returnValue2) {
-                                returnValue["DMs"] = returnValue2["DMs"]
-                                const toSend = {
-                                        info: returnValue,
-                                        messages: messages
-                                };
-                                console.log(toSend);
-                                res.end(JSON.stringify(toSend));
-                        });
+				returnValue["DMs"] = returnValue2["DMs"]
+				const toSend = {
+					info: returnValue,
+					messages: messages
+				};
+				console.log(toSend);
+				res.end(JSON.stringify(toSend));
+			});
 		});
 	});
 });
