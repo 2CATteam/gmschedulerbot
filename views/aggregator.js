@@ -19,14 +19,19 @@ async function getMessages(args, object) {
 			url = `https://api.groupme.com/v3/groups/${args.group_id}/messages?token=${args.token}&limit=100`
 		}
 		$.get(url, (chats, status) => {
-			if (status != "success") { reject("Incorrect status '" + status + "'") }
-			console.log(chats)
+			if (status != "success") {
+				if (status == 'notmodified') { resolve(true) }
+				reject("Incorrect status '" + status + "'")
+				return
+			}
 			//Save object count
 			object["count"] = chats.response.count
 			//Initialize size of current operation to 0
 			let size = 0
 			//For each message, add its info to object
 			for (var i in chats.response.messages) {
+				//$.post(`https://api.groupme.com/v3/messages/${args.group_id}/${chats.response.messages[i].id}/unlike?token=${args.token}`, {}, console.log('Success!'))
+				//$.post(`https://api.groupme.com/v3/messages/${args.group_id}/${chats.response.messages[i].id}/like?token=${args.token}`, {}, console.log('Success!'))
 				//console.log(chats.response[i])
 				//Update size and last read message
 				size++
@@ -38,13 +43,15 @@ async function getMessages(args, object) {
 						attNum++
 					}
 				}
+				var textLength = 0;
+				if (chats.response.messages[i].text) { textLength = chats.response.messages[i].text.length }
 				//Save required information
 				object.agg[chats.response.messages[i].id] = {
-					sender: chats.response.messages[i].sender_id
+					sender: chats.response.messages[i].sender_id,
 					name: chats.response.messages[i].name,
 					attachments: attNum,
 					likes: chats.response.messages[i].favorited_by,
-					textLength: chats.response.messages[i].text.length,
+					textLength: textLength,
 					time: chats.response.messages[i].created_at,
 					system: chats.response.messages[i].system
 				}
@@ -57,10 +64,8 @@ async function getMessages(args, object) {
 				//Resolve with a finished state
 				resolve(false);
 			}
-		}).on('error', (e) => {
-			console.error(e);
-		});
-	}
+		})
+	})
 }
 
 function parseMessages(source) {
@@ -81,6 +86,22 @@ function parseMessages(source) {
 				times: []
 			};
 		}
+		//Initialize data for everyone who has liked this message
+		for (var j in source.agg[i].likes) {
+			if (toReturn[source.agg[i].likes[j]] == undefined) {
+				toReturn[source.agg[i].likes[j]] = {
+                                sent: 0,
+                                name: "User left chat",
+                                names: [],
+                                attachments: 0,
+                                likes: 0,
+                                liked: 0,
+                                textLength: 0,
+                                times: []
+                        };
+
+			}
+		}
 	}
 	//Tally up sender stats
 	for (var i in source.agg) {
@@ -91,9 +112,9 @@ function parseMessages(source) {
 		toReturn[source.agg[i].sender].attachments += source.agg[i].attachments;
 		toReturn[source.agg[i].sender].textLength += source.agg[i].textLength;
 		//Add the time the message to the array for the graph
-		toReturn[source.agg[i].sender].times.push(source.agg[i].times);
+		toReturn[source.agg[i].sender].times.push(source.agg[i].time);
 		//Add names if they're new
-		if (!toReturn[source.agg[i].sender].names.contains(source.agg[i].name)) {
+		if (!toReturn[source.agg[i].sender].names.includes(source.agg[i].name)) {
 			toReturn[source.agg[i].sender].names.push(source.agg[i].name);
 		}
 		//Count likes received and note who gave likes

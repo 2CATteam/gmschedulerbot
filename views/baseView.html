@@ -7,6 +7,7 @@
 	<meta name="description" content="Tool for scheduling messages on GroupMe">
 	<meta name="keywords" content="GroupMe,message,schedule,scheduler,bot,free,service">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
 <body>
 <div id="MainBody">
@@ -28,7 +29,7 @@
 </select>
 <br>
 <input id="dmButton" type="radio" name="messageType" value="dm">
-<label for="dmButton">Schedule a DM</label><br>
+<label for="dmButton">Schedule a DM (Images disabled)</label><br>
 <select id="dmSelect" disabled>
         <option id="dmPlaceholderOption" value="Invalid">-Please log in first-</option>
 </select>
@@ -43,18 +44,20 @@
 </div>
 <br/>
 
-<p>Step 4. Type your message</p>
-<textarea disabled id="toSend" rows="5" cols="50" placeholder="Type your message here (max 1000 characters)..."></textarea>
+<p>Step 4. Type your message and (optionally) add an image (Max size 10MB)!</p>
+<textarea disabled id="toSend" rows="5" cols="50" placeholder="Type your message here (max 1000 characters)..."></textarea><br/>
+<input type="file" id="image" accept="image/jpeg,image/png,image/gif"/>
 <p id="ErrorLocation"></p>
 <p id="SuccessLocation"></p>
-<button onclick="submit()">Schedule Message!</button>
+<button id="SubmitButton" onclick="submit()">Schedule Message!</button>
 
 <h3 id="messagesLabel" hidden>Previously Scheduled Messages:</h3>
 <div id="scheduled"></div>
 
 <br/>
 <div class="StupidADiv">
-<a href="https://www.schmessage.com/faq">Have a question? It may be answered here!</a>
+<a href="https://www.schmessage.com/faq">Have a question? It may be answered here!</a><br/>
+<a href="list">Check out my other tools!</a>
 </div>
 
 <script type="text/javascript" src="webscripts.js"></script>

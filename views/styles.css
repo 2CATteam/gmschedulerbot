@@ -40,6 +40,46 @@ body {
 	background-color: DeepSkyBlue;
 }
 
+tr, td {
+	border: 1px solid black;
+	border-width: 0 1px 0 1px;
+	border-collapse: collapse;
+}
+
+th {
+	border: 1px solid black;
+	background-color: #FFF;
+	border-collapse: collapse;
+}
+
+th, td {
+	padding: 7px;
+}
+
+#TableDiv {
+	width: 100%;
+	overflow: auto;
+	padding: 10px;
+}
+table {
+	width: 100%;
+	overflow: auto;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+.tableData1 {
+	background-color: #FFF
+}
+
+.tableData2 {
+        background-color: #EEE
+}
+
+.tableGraph {
+	border: 1px solid black;
+}
+
 #MainBody {
 	margin: 25px 5% 25px 5%;
 	padding: 25px 5% 25px 5%;
@@ -108,3 +148,23 @@ body {
 	line-height: 0;
 	width: 60px;
 }
+
+.SortByText {
+        line-height: 0;
+        width: 140px;
+}
+
+#Nicknames {
+	font-size: 16px;
+	line-height: 1;
+}
+
+#Graph {
+	width: 100%;
+}
+
+#GraphDiv {
+	padding: 10px;
+}
+
+

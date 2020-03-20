@@ -1,8 +1,7 @@
 function updateBasedOnToken() {
 	var cookie = document.cookie
 	var token = cookie.split("token=")[1]
-	if (token==""||token in window)
-	{
+	if (token==""||token in window) {
 		return;
 	}
 	var request = new XMLHttpRequest();
@@ -12,37 +11,32 @@ function updateBasedOnToken() {
 	request.onload = () => {
 		const data = JSON.parse(request.response);
 		var dropdown = document.getElementById("Select");
-		if (data.info.chats.length == 0)
-		{
+		if (data.info.chats.length == 0) {
 			showError("There was an error authenticating your account. Please try again.");
 			return;
 		}
-		for (var i = 0; i < data.info.chats.length; i++)
-		{
+		for (var i = 0; i < data.info.chats.length; i++) {
 			var option = document.createElement("option");
 			option.text = data.info.chats[i][1];
 			option.setAttribute("value", data.info.chats[i][0]);
 			dropdown.add(option);
 		}
 		var dmdropdown = document.getElementById("dmSelect");
-		if (data.info.DMs.length == 0)
-		{
-	                var emptyDMs = document.getElementById("dmPlaceholderOption");
-        	        emptyDMs.text = "No DMs found"
-		}
-		else
-		{
+		if (data.info.DMs.length == 0) {
 			var emptyDMs = document.getElementById("dmPlaceholderOption");
-                        dmdropdown.removeChild(emptyDMs)
+			emptyDMs.text = "No DMs found"
+		}
+		else {
+			var emptyDMs = document.getElementById("dmPlaceholderOption");
+			dmdropdown.removeChild(emptyDMs)
 			dmdropdown.disabled = false;
 		}
-		for (var i = 0; i < data.info.DMs.length; i++)
-                {
-                        var option = document.createElement("option");
-                        option.text = data.info.DMs[i][1];
-                        option.setAttribute("value", data.info.DMs[i][0]);
-                        dmdropdown.add(option);
-                }
+		for (var i = 0; i < data.info.DMs.length; i++) {
+			var option = document.createElement("option");
+			option.text = data.info.DMs[i][1];
+			option.setAttribute("value", data.info.DMs[i][0]);
+			dmdropdown.add(option);
+		}
 		var toDelete = document.getElementById("placeholderOption");
 		dropdown.removeChild(toDelete);
 
@@ -57,35 +51,30 @@ function updateBasedOnToken() {
 }
 
 function submit() {
-	completeCheck(function()
-	{
-		validCheck(function()
-		{
+	completeCheck(function() {
+		validCheck(function() {
 			var cookie = document.cookie
 			var token = cookie.split("token=")[1]
 			var dateVal = document.getElementById("date").value;
 			var timeVal = document.getElementById("time").value;
 			var datetime = dateFromStrings(dateVal, timeVal);
 			var messageType = "chat";
-			if (document.getElementsByName("messageType")[0].checked)
-			{
+			if (document.getElementsByName("messageType")[0].checked) {
 				messageType = document.getElementsByName("messageType")[0].value;
 			}
-			if (document.getElementsByName("messageType")[1].checked)
-                        {
-                                messageType = document.getElementsByName("messageType")[1].value;
-                        }
+			if (document.getElementsByName("messageType")[1].checked) {
+				messageType = document.getElementsByName("messageType")[1].value;
+			}
 			var chat = "default";
 			var select = null;
-			if (messageType == "dm")
-			{
+			if (messageType == "dm") {
 				select = document.getElementById("dmSelect");
 			}
-			else
-			{
+			else {
 				select = document.getElementById("Select");
 			}
 			chat = select.options[select.selectedIndex].value
+			var image = $("#image").data('path')
 			var request = new XMLHttpRequest();
 			request.open("POST", window.location.href + "submitMessage/");
 			request.setRequestHeader('Content-Type', 'application/json');
@@ -94,6 +83,7 @@ function submit() {
 				chat: chat,
 				time: datetime.toISOString(),
 				toSend: document.getElementById("toSend").value,
+				image: image,
 				messageType: messageType
 			})
 			request.send(toSend);
@@ -114,16 +104,13 @@ function completeCheck(callback)
 	{showError("Date is required")}
 	else if (document.getElementById("time").value=="")
 	{showError("Time is required")}
-	else if (document.getElementById("toSend").value=="")
+	else if (document.getElementById("toSend").value=="" && !$("#image").data('path'))
 	{showError("Text is required")}
-	else
-	{callback()}
+	else { callback() }
 }
 
-function validCheck(callback)
-{
-	if (document.getElementById("Select").value=="Invalid")
-	{
+function validCheck(callback) {
+	if (document.getElementById("Select").value=="Invalid") {
 		showError("Authentication failed. Make sure cookies are turned on.");
 		return;
 	}
@@ -137,16 +124,14 @@ function validCheck(callback)
 	else {callback()}
 }
 
-function deleteMessage(button)
-{
+function deleteMessage(button) {
 	var cookie = document.cookie;
 	var token = cookie.split("token=")[1];
 	var pList = button.parentElement.children;
 
-        const searchText = pList[0].innerText.split("Chat: ")[1];
+	const searchText = pList[0].innerText.split("Chat: ")[1];
 	var groupID = groupIdFromName(searchText);
-	if (groupID == 0)
-	{
+	if (groupID == 0) {
 		console.log("Unable to find chat in list");
 		console.log(searchText);
 		showError("Something went wrong. Please refresh the page. If this continues, please message the dev at 2CATteam@gmail.com.");
@@ -169,16 +154,13 @@ function deleteMessage(button)
 	}
 }
 
-function updateMessages(data)
-{
+function updateMessages(data) {
 	document.getElementById("scheduled").innerHTML = "";
-	if (data.messages.length < 1)
-	{
+	if (data.messages.length < 1) {
 		document.getElementById("messagesLabel").hidden = true;
 		return
 	}
-	for (var x in data.messages)
-	{
+	for (var x in data.messages) {
 		var subDiv = document.createElement("div");
 		subDiv.setAttribute("class", "subDiv");
 
@@ -210,19 +192,14 @@ function updateMessages(data)
 	}
 }
 
-function groupNameFromMessage(data, x)
-{
-	for (var i = 0; i < data.info.chats.length; i++)
-	{
-		if (data.info.chats[i][0] == data.messages[x].group)
-		{
+function groupNameFromMessage(data, x) {
+	for (var i = 0; i < data.info.chats.length; i++) {
+		if (data.info.chats[i][0] == data.messages[x].group) {
 			return data.info.chats[i][1];
 		}
 	}
-	for (var i = 0; i < data.info.DMs.length; i++)
-	{
-		if (data.info.DMs[i][0] == data.messages[x].group)
-		{
+	for (var i = 0; i < data.info.DMs.length; i++) {
+		if (data.info.DMs[i][0] == data.messages[x].group) {
 			return data.info.DMs[i][1] + "'s DMs"
 		}
 	}
@@ -231,30 +208,24 @@ function groupNameFromMessage(data, x)
 	return "Unknown chat";
 }
 
-function groupIdFromName(name)
-{
+function groupIdFromName(name) {
 	var groupID = 0
 	const options = document.getElementById("Select").children
-        for (var choice = 0; choice < options.length; ++choice)
-        {
-                if (options[choice].innerText == name)
-                {
-                        groupID = options[choice].value;
-                }
-        }
+	for (var choice = 0; choice < options.length; ++choice) {
+		if (options[choice].innerText == name) {
+			groupID = options[choice].value;
+		}
+	}
 	const dmoptions = document.getElementById("dmSelect").children
-        for (var choice = 0; choice < dmoptions.length; ++choice)
-        {
-                if (dmoptions[choice].innerText + "'s DMs" == name)
-                {
-                        groupID = dmoptions[choice].value;
-                }
-        }
+	for (var choice = 0; choice < dmoptions.length; ++choice) {
+		if (dmoptions[choice].innerText + "'s DMs" == name) {
+			groupID = dmoptions[choice].value;
+		}
+	}
 	return groupID
 }
 
-function dateFromStrings(date, time)
-{
+function dateFromStrings(date, time) {
 	let dateSplit = date.split("-");
 	let timeSplit = time.split(":");
 	let ints = [
@@ -268,21 +239,18 @@ function dateFromStrings(date, time)
 	return toReturn;
 }
 
-function showError(toShow)
-{
+function showError(toShow) {
 	document.getElementById("ErrorLocation").innerHTML = "ERROR: " + toShow;
 	document.getElementById("SuccessLocation").innerHTML = "";
 }
 
-function showSuccess()
-{
+function showSuccess() {
 	document.getElementById("ErrorLocation").innerHTML = "";
 	document.getElementById("SuccessLocation").innerHTML = "Success! Your message has been scheduled and you can view or cancel it below.";
 	document.getElementById("toSend").value = "";
 }
 
-function debug()
-{
+function debug() {
 	var debugString = "";
 	debugString += document.cookie;
 	debugString += "\n \n";
@@ -311,8 +279,40 @@ function debug()
 	document.getElementById("ErrorLocation").innerHTML = debugString;
 }
 
-function anonSend()
-{
+function imageUpload(event) {
+	document.getElementById("ErrorLocation").innerHTML = "";
+	const files = event.target.files
+	$("#image").removeData('path');
+	if (files.length < 1) {
+		$("#SubmitButton").prop("disabled", false);
+		return;
+	}
+	$("#SubmitButton").prop("disabled", true);
+	const data = new FormData()
+	data.append('image', files[0])
+	var token = document.cookie.split("token=")[1];
+	data.append('token', token)
+
+	var request = new XMLHttpRequest();
+	request.open("POST", window.location.href + "uploadImage/");
+	request.send(data);
+	request.onload = () => {
+		if (request.status > 399) {
+			showError("Something went wrong with your image upload. Please try again, or if this error persists, try with a different file.")
+			$("#SubmitButton").prop("disabled", false);
+			return;
+		}
+		const data = JSON.parse(request.response);
+		$("#image").data('path', data.path);
+		$("#SubmitButton").prop("disabled", false);
+	}
+	request.onerror = () => {
+		showError("Something went wrong with your image upload. Please try again, or if this error persists, try with a different file.")
+		$("#SubmitButton").prop("disabled", false);
+	}
+}
+
+function anonSend() {
 	const toSendText = document.getElementById("toSend").value;
 	const address = "https://api.groupme.com/v3/bots/post";
 	var request = new XMLHttpRequest();
@@ -325,4 +325,17 @@ function anonSend()
 	request.send(toSend);
 }
 
-window.onload = updateBasedOnToken;
+$(document).ready(() => {
+	updateBasedOnToken()
+	$("#image").change((event) => {
+		imageUpload(event)
+	})
+	$("input[type='radio']").change(function() {
+		if (this.value == "dm") {
+			$('#image').prop('disabled', true)
+			$("#image").removeData('path');
+		} else {
+			$('#image').prop('disabled', false)
+		}
+	})
+})
