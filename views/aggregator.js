@@ -71,6 +71,18 @@ async function getMessages(args, object) {
 function parseMessages(source) {
 	//Initialize return object
 	var toReturn = {};
+	for (var i in source.members) {
+		toReturn[i] = {
+			sent: 0,
+			name: "User left chat",
+			names: [],
+			attachments: 0,
+			likes: 0,
+			liked: 0,
+			textLength: 0,
+			times: []
+		};
+	}
 	//Create all senders as needed in the object
 	for (var i in source.agg) {
 		if (toReturn[source.agg[i].sender] == undefined && !source.agg[i].system) {
@@ -90,15 +102,15 @@ function parseMessages(source) {
 		for (var j in source.agg[i].likes) {
 			if (toReturn[source.agg[i].likes[j]] == undefined) {
 				toReturn[source.agg[i].likes[j]] = {
-                                sent: 0,
-                                name: "User left chat",
-                                names: [],
-                                attachments: 0,
-                                likes: 0,
-                                liked: 0,
-                                textLength: 0,
-                                times: []
-                        };
+				sent: 0,
+				name: "User left chat",
+				names: [],
+				attachments: 0,
+				likes: 0,
+				liked: 0,
+				textLength: 0,
+				times: []
+			};
 
 			}
 		}

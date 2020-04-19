@@ -127,25 +127,16 @@ function validCheck(callback) {
 function deleteMessage(button) {
 	var cookie = document.cookie;
 	var token = cookie.split("token=")[1];
-	var pList = button.parentElement.children;
-
-	const searchText = pList[0].innerText.split("Chat: ")[1];
-	var groupID = groupIdFromName(searchText);
-	if (groupID == 0) {
-		console.log("Unable to find chat in list");
-		console.log(searchText);
-		showError("Something went wrong. Please refresh the page. If this continues, please message the dev at 2CATteam@gmail.com.");
-	}
-	let dateData = new Date(pList[1].innerHTML.split("<b>Time: </b>")[1]);
+	var parent = $(button.parentElement);
 
 	var request = new XMLHttpRequest();
 	request.open("POST", window.location.href + "deleteMessage/");
 	request.setRequestHeader('Content-Type', 'application/json');
 	const toSend = JSON.stringify({
 		token: token,
-		chat: groupID,
-		time: dateData.toISOString(),
-		toSend: pList[2].innerHTML.split("<b>Message: </b>")[1]
+		chat: parent.data("chat"),
+		time: parent.data("time"),
+		toSend: parent.data("text"),
 	})
 	request.send(toSend);
 	request.onload = () => {
@@ -167,19 +158,29 @@ function updateMessages(data) {
 		var groupText = document.createElement("p");
 		groupText.setAttribute("class", "groupText");
 		groupText.innerHTML = "<b>Chat: </b>" + groupNameFromMessage(data, x);
+		$(subDiv).data("chat", data.messages[x].group)
 		subDiv.appendChild(groupText);
 
 		var tempDate = new Date(data.messages[x].time);
 		var timeText = document.createElement("p");
 		timeText.setAttribute("class", "timeText");
 		timeText.innerHTML = "<b>Time: </b>" + tempDate.toLocaleString();
+		$(subDiv).data("time", tempDate);
 		subDiv.appendChild(timeText);
 
 		var textText = document.createElement("p");
 		textText.setAttribute("class", "textText");
 		textText.innerHTML = "<b>Message: </b>" + data.messages[x].toSend;
+		$(subDiv).data("text", data.messages[x].toSend);
 		subDiv.appendChild(textText);
 
+		if (data.messages[x].image) {
+			var imageText = document.createElement("p");
+			imageText.setAttribute("class", "textText");
+			imageText.innerHTML = "<b>Image URL: </b>" + data.messages[x].image
+			$(subDiv).data("image", data.messages[x].image)
+			subDiv.appendChild(imageText)
+		}
 		var cancelButton = document.createElement("button");
 		cancelButton.setAttribute("onclick", "deleteMessage(this)");
 		cancelButton.innerHTML = "Cancel message";
