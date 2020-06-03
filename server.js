@@ -24,8 +24,6 @@ app.use(fileupload());
 //Normal website just gives normal screen
 app.get('/', (req, res) =>
 {
-	hits++;
-	console.log(hits)
 	res.sendFile(path.join(__dirname + '/views/baseView.html'))
 });
 
@@ -119,6 +117,8 @@ app.post('/getInfo/', (req, res) =>
 //Adds messages to be sent to the list
 app.post('/submitMessage/', (req, res) =>
 {
+	hits++;
+	console.log(hits)
 	var info = "";
 	req.on('data', (chunk) => {
 		info += chunk;

@@ -1,6 +1,6 @@
 {
-  "name": "gmschedulerbot",
-  "version": "2.0.0",
+  "name": "schmessage",
+  "version": "3.0.0",
   "description": "A scheduler bot for GroupMe",
   "main": "server.js",
   "scripts": {
