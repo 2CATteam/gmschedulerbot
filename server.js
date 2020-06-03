@@ -14,6 +14,8 @@ var sender = require('./lib/MessageSender');
 var schedulerFile = require('./lib/MessageScheduler');
 var scheduler = new schedulerFile();
 
+var hits = 0;
+
 app.use(cookieParser());
 app.use(express.static(__dirname + '/views'));
 app.use(favicon(__dirname + '/views/favicon.ico'));
@@ -22,6 +24,8 @@ app.use(fileupload());
 //Normal website just gives normal screen
 app.get('/', (req, res) =>
 {
+	hits++;
+	console.log(hits)
 	res.sendFile(path.join(__dirname + '/views/baseView.html'))
 });
 
@@ -45,7 +49,7 @@ app.get('/list/?', (req, res) => {
 //Authentication just adds a cookie and then redirects
 app.get('/summary/authenticate/?', (req, res) =>
 {
-	res.cookie('token', req.query.access_token);
+	res.cookie('token', req.query.access_token, {maxAge: 604800000});
 	res.redirect("/summary/");
 });
 
@@ -59,6 +63,12 @@ app.get('/debugPrint/', (req, res) =>
 app.get('/faq/', (req, res) =>
 {
 	res.sendFile(path.join(__dirname + '/views/faqView.html'))
+});
+
+//loss view
+app.get('/loss/', (req, res) =>
+{
+	res.sendFile(path.join(__dirname + '/views/lossView.html'))
 });
 
 app.get('/anon/', (req, res) => 
@@ -99,7 +109,6 @@ app.post('/getInfo/', (req, res) =>
 					info: returnValue,
 					messages: messages
 				};
-				console.log(toSend);
 				res.end(JSON.stringify(toSend));
 			});
 		});
@@ -115,6 +124,7 @@ app.post('/submitMessage/', (req, res) =>
 	});
 	req.on('end', () => {
 		const infoJson = JSON.parse(info);
+		console.log(infoJson)
 		var date = new Date(infoJson.time);
 		scheduler.scheduleMessage(infoJson.token, infoJson.chat, date, infoJson.toSend, infoJson.image, infoJson.messageType, infoJson.file);
 		const messages = scheduler.getMessages(infoJson.token);
@@ -125,7 +135,6 @@ app.post('/submitMessage/', (req, res) =>
 					info: returnValue,
 					messages: messages
 				};
-				console.log(toSend);
 				res.end(JSON.stringify(toSend));
 			});
 		});
@@ -153,7 +162,6 @@ app.post('/deleteMessage/', (req, res) =>
 					info: returnValue,
 					messages: messages
 				};
-				console.log(toSend);
 				res.end(JSON.stringify(toSend));
 			});
 		});

@@ -117,10 +117,12 @@ function validCheck(callback) {
 	var dateVal = document.getElementById("date").value;
 	var timeVal = document.getElementById("time").value;
 	var datetime = dateFromStrings(dateVal, timeVal);
+	if (!datetime)
+		{showError("Date could not be read. Please check your formatting.")}
 	if (datetime < new Date())
-	{showError("Message cannot be scheduled for the past.")}
+		{showError("Message cannot be scheduled for the past.")}
 	else if (document.getElementById("toSend").value.length > 1000)
-	{showError("Maximum length is 1000 characters.")}
+		{showError("Maximum length is 1000 characters.")}
 	else {callback()}
 }
 
@@ -227,6 +229,8 @@ function groupIdFromName(name) {
 }
 
 function dateFromStrings(date, time) {
+	if (!date.match(/\d{4}-\d{1,2}-\d{1,2}/i)) { return }
+	if (!time.match(/\d{1,2}:\d{1,2}/i)) { return }
 	let dateSplit = date.split("-");
 	let timeSplit = time.split(":");
 	let ints = [
