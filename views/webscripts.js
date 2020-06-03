@@ -5,7 +5,7 @@ function updateBasedOnToken() {
 		return;
 	}
 	var request = new XMLHttpRequest();
-	request.open("POST", "https://www.schmessage.com/getInfo/");
+	request.open("POST", "/getInfo/");
 	request.setRequestHeader('Content-Type', 'application/json');
 	request.send(JSON.stringify({token: token}));
 	request.onload = () => {

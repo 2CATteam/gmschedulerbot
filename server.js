@@ -6,7 +6,7 @@ const path = require('path')
 const https = require('https')
 const cookieParser = require('cookie-parser')
 const url = require('url')
-const port = 3000
+const port = 4053
 var favicon = require('serve-favicon');
 const fileupload = require('express-fileupload')
 
@@ -71,7 +71,8 @@ app.get('/loss/', (req, res) =>
 	res.sendFile(path.join(__dirname + '/views/lossView.html'))
 });
 
-app.get('/anon/', (req, res) => 
+//A bunch of individual anonymous bot hosting
+app.get('/anon/', (req, res) =>
 {
 	res.sendFile(path.join(__dirname + '/views/anonSendView.html'))
 });
@@ -183,6 +184,14 @@ app.post('/uploadImage/?', (req, res) => {
 			res.end(JSON.stringify({ status: 'success', path: url }))
 		})
 	})
+})
+
+process.on('SIGINT', () => {
+	console.log('Stopping gracefully');
+	scheduler.closeDB((err) => {
+		console.log('Closed db gracefully')
+		process.exit(err ? 1 : 0);
+	});
 })
 
 //Restores backup on start
