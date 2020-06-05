@@ -6,7 +6,7 @@ const path = require('path')
 const https = require('https')
 const cookieParser = require('cookie-parser')
 const url = require('url')
-const port = 4053
+const port = 3000
 var favicon = require('serve-favicon');
 const fileupload = require('express-fileupload')
 

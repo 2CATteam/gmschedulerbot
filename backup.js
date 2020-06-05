@@ -1,9 +1,10 @@
 //This file should be run hourly if possible. Put it in crontab.
 var sqlite = require('sqlite3');
-const https = require('https')
+const https = require('https');
+const path = require('path');
 
-var db = new sqlite.Database('./messages.db', sqlite.OPEN_READWRITE, toss)
-var backup = new sqlite.Database('./backup.db', sqlite.OPEN_READWRITE, toss)
+var db = new sqlite.Database(path.join(__dirname, 'messages.db'), sqlite.OPEN_READWRITE, toss)
+var backup = new sqlite.Database(path.join(__dirname, './backup.db'), sqlite.OPEN_READWRITE, toss)
 
 db.all('SELECT * FROM main', (err, rows) => {
 	if (rows.length == 0) {
@@ -22,58 +23,75 @@ db.all('SELECT * FROM main', (err, rows) => {
 		console.log('I hate my job') //Note: This is the script talking, not the programmer. The programmer is having a lot of fun writing this.
 		console.log('When have we even needed this backup? Stupid waste of time...') //The script doesn't get the point of a backup
 		db.each('SELECT * FROM main', (err, row) => {
-			backup.run('INSERT INTO main (token, chat, time, toSend, image, messageType) VALUES (?, ?, ?, ?, ?, ?)',
-				row.token, row.chat, row.time, row.toSend, row.image, row.messageType, (err) => {
+			toss(err)
+			backup.get('SELECT * FROM main WHERE token = ? AND chat = ? AND time = ? AND toSend = ? AND messageType = ?',
+				row.token, row.chat, row.time, row.toSend, row.messageType, (err, result) => {
 				toss(err)
+				if (result) {
+					return;
+				} else {
+					backup.run('INSERT INTO main (token, chat, time, toSend, image, messageType) VALUES (?, ?, ?, ?, ?, ?)',
+						row.token, row.chat, row.time, row.toSend, row.image, row.messageType, toss)
+				}
 			})
 		}, (err, num) => {
 			toss(err)
+			db.close()
+			backup.close()
 			console.log('Aight, Imma go home now. See ya next time I have to do this thing...')
 		})
 	}
 })
 
-function toss(err) {
+async function toss(err) {
 	if (err) {
-		send(err.toString())
+		await send(err.toString())
+		db.close()
+		backup.close()
 		throw err
 	}
 }
 
-function send(messageText) {
-        if (messageText.length > 1000) {
-                send(messageText.substring(0, 1000))
-                send(messageText.substring(1000, messageText.length))
-                return;
-        }
-        const botId = '';
+async function send(messageText) {
+	return new Promise((res, rej) => {
+	        if (messageText.length > 1000) {
+        	        send(messageText.substring(0, 1000))
+                	send(messageText.substring(1000, messageText.length))
+	                return;
+        	}
+	        const botId = '';
 
-        const options = {
-                hostname: 'api.groupme.com',
-                path: '/v3/bots/post',
-                method: 'POST'
-        };
+	        const options = {
+	                hostname: 'api.groupme.com',
+	                path: '/v3/bots/post',
+	                method: 'POST'
+	        };
 
-        const body = {
-                bot_id: botId,
-                text: messageText
-        };
+        	const body = {
+	                bot_id: botId,
+        	        text: messageText
+	        };
 
 
-        const botRequest = https.request(options, function(response) {
-                if (response.statusCode !== 202) {
-                        console.log('Bad status ' + response.statusCode);
-                }
-        });
+        	const botRequest = https.request(options, function(response) {
+                	if (response.statusCode !== 202) {
+                        	console.log('Bad status ' + response.statusCode);
+	                } else {
+				console.log('Good status')
+			}
+			res()
+        	});
 
-        botRequest.on('error', function(error) {
-                console.log(JSON.stringify(error));
-        });
+	        botRequest.on('error', function(error) {
+        	        console.log(JSON.stringify(error));
+	        });
 
-        botRequest.on('timeout', function(error) {
-                console.log('Timeout ' + JSON.stringify(error));
-        });
-        botRequest.end(JSON.stringify(body));
-};
+        	botRequest.on('timeout', function(error) {
+                	console.log('Timeout ' + JSON.stringify(error));
+	        });
+
+        	botRequest.end(JSON.stringify(body));
+	})
+}
 
 
