@@ -1,9 +1,9 @@
 function updateBasedOnToken() {
-	var cookie = document.cookie
-	var token = cookie.split("token=")[1]
+	var token = getCookie("token")
 	if (token==""||token in window) {
 		return;
 	}
+	$("#logOut").removeAttr("hidden")
 	var request = new XMLHttpRequest();
 	request.open("POST", "/getInfo/");
 	request.setRequestHeader('Content-Type', 'application/json');
@@ -53,8 +53,7 @@ function updateBasedOnToken() {
 function submit() {
 	completeCheck(function() {
 		validCheck(function() {
-			var cookie = document.cookie
-			var token = cookie.split("token=")[1]
+			var token = getCookie("token")
 			var dateVal = document.getElementById("date").value;
 			var timeVal = document.getElementById("time").value;
 			var datetime = dateFromStrings(dateVal, timeVal);
@@ -127,8 +126,7 @@ function validCheck(callback) {
 }
 
 function deleteMessage(button) {
-	var cookie = document.cookie;
-	var token = cookie.split("token=")[1];
+	var token = getCookie("token")
 	var parent = $(button.parentElement);
 
 	var request = new XMLHttpRequest();
@@ -297,7 +295,7 @@ function imageUpload(event) {
 	$("#SubmitButton").prop("disabled", true);
 	const data = new FormData()
 	data.append('image', files[0])
-	var token = document.cookie.split("token=")[1];
+	var token = getCookie("token");
 	data.append('token', token)
 
 	var request = new XMLHttpRequest();
@@ -332,6 +330,22 @@ function anonSend() {
 	request.send(toSend);
 }
 
+function getCookie(key) {
+	obj = {}
+	list = document.cookie.split(";")
+	for (x in list) {
+		if (list[x]) {
+			pair = list[x].split("=", 2)
+			obj[pair[0].trim()] = pair[1].trim()
+		}
+	}
+	return obj[key]
+}
+
+function setCookie(key, value) {
+	document.cookie = `${key}=${value}`
+}
+
 $(document).ready(() => {
 	updateBasedOnToken()
 	$("#image").change((event) => {
@@ -344,5 +358,9 @@ $(document).ready(() => {
 		} else {
 			$('#image').prop('disabled', false)
 		}
+	})
+	$("#logOut").click(() => {
+		document.cookie = "token="
+		location.reload()
 	})
 })
