@@ -193,6 +193,7 @@ function showGraph(event) {
 				borderWidth: 3,
 				fill: false,
 				data: data,
+				cubicInterpolationMode: 'monotone',
 				borderColor: '#00ADFF'
 			}]
 		},
