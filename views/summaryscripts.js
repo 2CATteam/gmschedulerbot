@@ -112,13 +112,13 @@ function fillTable() {
 			length += summary[order[i]].textLength
 		}
 		let header = `<tr class="tableData3">
-	<td>Whole Chat</td>
-	<td>${sent}</td>
-	<td>${att}</td>
-	<td>${likes}</td>
-	<td>${liked}</td>
-	<td>${Math.round(length / sent * 10) / 10}</td>
-	<td>${Math.round(likes / sent * 100) / 100}</td>
+	<td class="topRow">Whole Chat</td>
+	<td class="topRow">${sent}</td>
+	<td class="topRow">${att}</td>
+	<td class="topRow">${likes}</td>
+	<td class="topRow">${liked}</td>
+	<td class="topRow">${Math.round(length / sent * 10) / 10}</td>
+	<td class="topRow">${Math.round(likes / sent * 100) / 100}</td>
 </tr>`
 		let headElement = $(header)
 		$("table").append(headElement)

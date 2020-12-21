@@ -61,7 +61,7 @@ app.get('/summary/authenticate/?', (req, res) =>
 app.get('/vibecheck/authenticate/?', (req, res) =>
 {
 	res.cookie('token', req.query.access_token, {maxAge: 604800000});
-	res.redirect("/summary/");
+	res.redirect("/vibecheck/");
 });
 
 //FAQ view
