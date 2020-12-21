@@ -17,7 +17,7 @@ function updateBasedOnToken() {
 	args.token = token
 	//Download a list of user's chats from the server
 	var request = new XMLHttpRequest();
-	request.open("POST", "https://www.schmessage.com/getInfo/");
+	request.open("POST", "/getInfo/");
 	request.setRequestHeader('Content-Type', 'application/json');
 	request.send(JSON.stringify({token: token}));
 	request.onload = () => {
@@ -98,6 +98,31 @@ function fillTable() {
 			}
 		});
 	}
+	if (order.length > 0) { 
+		var sent = 0
+		var att = 0
+		var likes = 0
+		var liked = 0
+		var length = 0
+		for (var i in order) {
+			sent += summary[order[i]].sent
+			att += summary[order[i]].attachments
+			likes += summary[order[i]].likes
+			liked += summary[order[i]].liked
+			length += summary[order[i]].textLength
+		}
+		let header = `<tr class="tableData3">
+	<td>Whole Chat</td>
+	<td>${sent}</td>
+	<td>${att}</td>
+	<td>${likes}</td>
+	<td>${liked}</td>
+	<td>${Math.round(length / sent * 10) / 10}</td>
+	<td>${Math.round(likes / sent * 100) / 100}</td>
+</tr>`
+		let headElement = $(header)
+		$("table").append(headElement)
+	}
 	for (var i in order) {
 		let row = `<tr class="tableData${ i%2 == 0 ? 1 : 2}">
 	<td>${summary[order[i]].name}</td>
@@ -150,7 +175,7 @@ function beginningCallback(res) {
 }
 
 function showGraph(event) {
-	if ($(".tableGraph").data("id") == $(event.target).parent().data("id")) {
+	if ($(".tableGraph").data("id") == $(event.target).parent().data("id") || $(event.target).parent().data("id") == undefined) {
 		$(".tableGraph").remove()
 		return
 	} else {
@@ -190,20 +215,23 @@ function showGraph(event) {
 					type: 'time',
 					distribution: 'linear',
 					ticks: {
-						source: 'data',
+						source: 'auto',
 						major: {
 							enabled: true,
 							fontStyle: 'bold',
 						},
 						autoSkip: true,
 						autoSkipPadding: 1000,
-						maxRotation: 90,
-						minRotation: 90,
+						maxRotation: 45,
+						minRotation: 0,
 						sampleSize: 10,
-						maxTicksLimit: 10
+						maxTicksLimit: 20
 					},
 					time: {
-						minUnit: 'day'
+						unit: 'day',
+						displayFormats: {
+							day: 'MMM D'
+						},
 					}
 				}],
 				yAxes: [{
@@ -224,6 +252,11 @@ function showGraph(event) {
 					label: function(tooltipItem) {
 						return tooltipItem.yLabel;
 					}
+				}
+			},
+			layout: {
+				padding: {
+					bottom: 10
 				}
 			}
 		}

@@ -2,21 +2,21 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="../styles.css">
-	<title>GroupMe scheduling service</title>
+	<title>GroupMe vibe checker</title>
 	<meta charset="UTF-8">
-	<meta name="description" content="Tool for scheduling messages on GroupMe">
-	<meta name="keywords" content="GroupMe,message,schedule,scheduler,bot,free,service">
+	<meta name="description" content="Tool for measuring positivity on GroupMe">
+	<meta name="keywords" content="GroupMe,message,schedule,scheduler,bot,free,service,summary">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
-	<script type="text/javascript" src="../aggregator.js"></script>
-	<script type="text/javascript" src="../summaryscripts.js"></script>
+	<script type="text/javascript" src="../afinn.js"></script>
+	<script type="text/javascript" src="../vibescripts.js"></script>
 </head>
 <body>
 <div id="MainBody">
 <h1>GroupMe chat summary</h1>
-<p id="Description">See who's talked the most in your GroupMe chats.</p>
+<p id="Description">See how positive your GroupMe chats are.</p>
 
 <p>Step 1. Authenticate with GroupMe</p>
 <p id="completionLocation"> </p>
@@ -25,13 +25,13 @@
 </div>
 <br/>
 
-<p>Step 2. Select the chat to summarize</p>
+<p>Step 2. Select the chat to analyze</p>
 <select id="Select" disabled>
 	<option id="placeholderOption" value="Invalid">-Please log in first-</option>
 </select>
 <br>
 
-<button id="Submit" disabled>Begin summary!</button>
+<button id="Submit" disabled>Begin analysis!</button>
 
 <p id="ErrorLocation"></p>
 <p id="ProgressLocation"></p>
@@ -41,11 +41,8 @@
 <select id="SortBy">
 	<option value="name">Name</option>
 	<option value="sent">Messages Sent</option>
-	<option value="attachments">Images Sent</option>
-	<option value="likes">Liked Received</option>
-	<option value="liked">Likes Given</option>
-	<option value="textLength">Average characters/message</option>
-	<option value="avgLikes">Average likes/message</option>
+	<option value="totalScore">Positivity</option>
+	<option value="final">Avg. Positivity</option>
 </select>
 <select id="Direction">
 	<option value=-1>Descending</option>
@@ -57,13 +54,13 @@
 	<tr class="tableHead">
 		<th>Name</th>
 		<th>Messages<br/>sent</th>
-		<th>Images<br/>sent</th>
-		<th>Likes<br/>received</th>
-		<th>Likes<br/>given</th>
-		<th>Average<br/>characters/message</th>
-		<th>Average<br/>likes/message</th>
+		<th>Positivity<br/>score</th>
+		<th>Average<br/>Positivity</th>
 	</tr>
 </table>
+<br/>
+<br/>
+<p class="smallText">This tool checks messages against the AFINN-165 word list to measure whether someone tends to be more positive or more negative. The scores assigned are not meant as a value judgement or a ranking or anything like that; all they show is a measure of whether someone uses language that is generally more positive or negative. Moreover, it may be limited in how it interprets some phrases, especially ones that include profanity.</p>
 <br/>
 <div class="StupidADiv">
 	<a href="https://www.schmessage.com/list">Check out my other tools!</a>

@@ -104,15 +104,15 @@ function parseMessages(source) {
 		for (var j in source.agg[i].likes) {
 			if (toReturn[source.agg[i].likes[j]] == undefined) {
 				toReturn[source.agg[i].likes[j]] = {
-				sent: 0,
-				name: "User left chat",
-				names: [],
-				attachments: 0,
-				likes: 0,
-				liked: 0,
-				textLength: 0,
-				times: []
-			};
+					sent: 0,
+					name: "User left chat",
+					names: [],
+					attachments: 0,
+					likes: 0,
+					liked: 0,
+					textLength: 0,
+					times: []
+				};
 
 			}
 		}

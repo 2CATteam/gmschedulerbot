@@ -17,7 +17,7 @@ function updateBasedOnToken() {
 	args.token = token
 	//Download a list of user's chats from the server
 	var request = new XMLHttpRequest();
-	request.open("POST", "https://www.schmessage.com/getInfo/");
+	request.open("POST", "/getInfo/");
 	request.setRequestHeader('Content-Type', 'application/json');
 	request.send(JSON.stringify({token: token}));
 	request.onload = () => {
@@ -48,7 +48,7 @@ function updateBasedOnToken() {
 }
 
 function showError(toShow) {
-	document.getElementById("ErrorLocation").innerHTML = toShow;
+	$("#ErrorLocation").text(toShow)
 }
 
 function showProgress(toShow) {
@@ -61,27 +61,7 @@ function fillTable() {
 	let order = Object.keys(summary)
 	var sortBy = $("#SortBy").val()
 	var direction = $("#Direction").val()
-	if (sortBy == "textLength") {
-		order.sort((a, b) => {
-			if (summary[b].sent == 0) return -1
-			if (summary[a].sent == 0) return 1
-			if ((summary[a].textLength / summary[a].sent) > (summary[b].textLength / summary[b].sent)) {
-				return direction
-			} else {
-				return direction * -1
-			}
-		});
-	} else if (sortBy == "avgLikes") {
-		order.sort((a,b) => {
-			if (summary[b].sent == 0) return -1
-                        if (summary[a].sent == 0) return 1
-                        if ((summary[a].likes / summary[a].sent) > (summary[b].likes / summary[b].sent)) {
-                                return direction
-                        } else {
-                                return direction * -1
-                        }
-		});
-	} else if (sortBy == "name") {
+	if (sortBy == "name") {
 		order.sort((a, b) => {
 			if (summary[a][sortBy].toLowerCase() > summary[b][sortBy].toLowerCase()) {
 				return direction
@@ -91,22 +71,41 @@ function fillTable() {
 		});
 	} else {
 		order.sort((a, b) => {
-			if (summary[a][sortBy] > summary[b][sortBy]) {
+			if (isNaN(summary[a][sortBy])) {
+				return 1
+			} else if (isNaN(summary[b][sortBy])) {
+				return -1
+			} else if (summary[a][sortBy] > summary[b][sortBy]) {
 				return direction
 			} else {
 				return direction * -1
 			}
 		});
 	}
+	if (order.length > 0) { 
+		var sent = 0
+		var scores = 0
+		var words = 0
+		for (var i in order) {
+			sent += summary[order[i]].sent
+			scores += summary[order[i]].totalScore
+			words += summary[order[i]].totalWords
+		}
+		let header = `<tr class="tableData3">
+	<td class="topRow">Whole Chat</td>
+	<td class="topRow">${sent}</td>
+	<td class="topRow">${scores}</td>
+	<td class="topRow">${Math.round(scores / words * 100) / 100}</td>
+</tr>`
+		let headElement = $(header)
+		$("table").append(headElement)
+	}
 	for (var i in order) {
 		let row = `<tr class="tableData${ i%2 == 0 ? 1 : 2}">
 	<td>${summary[order[i]].name}</td>
 	<td>${summary[order[i]].sent}</td>
-	<td>${summary[order[i]].attachments}</td>
-	<td>${summary[order[i]].likes}</td>
-	<td>${summary[order[i]].liked}</td>
-	<td>${Math.round((summary[order[i]].textLength) / (summary[order[i]].sent) * 10) / 10}</td>
-	<td>${Math.round(summary[order[i]].likes/summary[order[i]].sent * 100) / 100}</td>
+	<td>${summary[order[i]].totalScore}</td>
+	<td>${Math.round(summary[order[i]].totalScore / summary[order[i]].totalWords * 100) / 100}</td>
 </tr>`
 		let element = $(row)
 		$("table").append(element)
@@ -124,7 +123,7 @@ function startAgg() {
 	}
 	else {
 		args.state = 1
-		getUsers(args, aggregate).then(() => { getMessages(args, aggregate).then(beginningCallback) })
+		getUsers(args).then(() => { getMessages(args).then(beginningCallback) })
 	}
 }
 
@@ -138,10 +137,10 @@ function beginningCallback(res) {
 	}
 	if (res) {
 		showProgress(`${Object.keys(aggregate.agg).length}/${aggregate.count} messages downloaded`)
-		getMessages(args, aggregate).then(beginningCallback)
+		getMessages(args).then(beginningCallback)
 	} else {
 		showProgress(`Messages downloaded, parsing data...`)
-		summary = parseMessages(aggregate)
+		parseMessages()
 		fillTable()
 		showProgress("Done!")
 		args.last = undefined
@@ -149,8 +148,16 @@ function beginningCallback(res) {
 	}
 }
 
+function sum(arr) {
+	var sum = 0
+	for (var i in arr) {
+		sum += arr[i]
+	}
+	return sum
+}
+
 function showGraph(event) {
-	if ($(".tableGraph").data("id") == $(event.target).parent().data("id")) {
+	if ($(".tableGraph").data("id") == $(event.target).parent().data("id") || $(event.target).parent().data("id") == undefined) {
 		$(".tableGraph").remove()
 		return
 	} else {
@@ -161,9 +168,19 @@ function showGraph(event) {
 	if (nickString == "") { nickString = "None" }
 	$("#Nicknames").text("Names used: " + nickString)
 	let data = []
-	let times = summary[$(event.target).parent().data("id")].times
-	for (var i in times) {
-		data.push({ t: moment(new Date(times[i]*1000)), y: times.length-parseInt(i) })
+	let key = $(event.target).parent().data("id")
+	let scoreQueue = []
+	let wordsQueue = []
+	for (var i = summary[key].times.length - 1; i >= 0; i--) {
+		scoreQueue.push(summary[key].scores[i])
+		if (scoreQueue.length > Math.round(summary[key].times.length / 8)) {
+			scoreQueue.shift()
+		}
+		wordsQueue.push(summary[key].words[i])
+		if (wordsQueue.length > Math.round(summary[key].times.length / 8)) {
+			wordsQueue.shift()
+		}
+		data.push({ t: moment(new Date(summary[key].times[i]*1000)), y: (sum(scoreQueue) / sum(wordsQueue)) })
 	}
 	let ctx = $("#Graph");
 	var graph = new Chart(ctx, {
@@ -171,10 +188,9 @@ function showGraph(event) {
 		data: {
 			datasets: [{
 				type: 'line',
-				label: 'Messages sent',
+				label: 'Positivity (rolling average)',
 				pointRadius: 1,
 				borderWidth: 3,
-				steppedLine: 'after',
 				fill: false,
 				data: data,
 				borderColor: '#00ADFF'
@@ -183,27 +199,30 @@ function showGraph(event) {
 		options: {
 			title: {
 				display: false,
-				text: "Messages sent over time"
+				text: "Positivity over time"
 			},
 			scales: {
 				xAxes: [{
 					type: 'time',
 					distribution: 'linear',
 					ticks: {
-						source: 'data',
+						source: 'auto',
 						major: {
 							enabled: true,
 							fontStyle: 'bold',
 						},
 						autoSkip: true,
 						autoSkipPadding: 1000,
-						maxRotation: 90,
-						minRotation: 90,
+						maxRotation: 45,
+						minRotation: 0,
 						sampleSize: 10,
-						maxTicksLimit: 10
+						maxTicksLimit: 20
 					},
 					time: {
-						minUnit: 'day'
+						unit: 'day',
+						displayFormats: {
+							day: 'MMM D'
+						},
 					}
 				}],
 				yAxes: [{
@@ -212,7 +231,7 @@ function showGraph(event) {
 					},
 					scaleLabel: {
 						display: true,
-						labelString: "Messages sent"
+						labelString: "Positivity (rolling average)"
 					}
 				}]
 			},
@@ -225,10 +244,183 @@ function showGraph(event) {
 						return tooltipItem.yLabel;
 					}
 				}
+			},
+			layout: {
+				padding: {
+					bottom: 10
+				}
 			}
 		}
 	});
 	$(".tableGraph").data("id", $(event.target).parent().data("id"))
+}
+
+//Analyze string and assign it values using AFINN
+function analyze(string) {
+	//Initialize cumulative score
+	var scoreSum = 0
+	//Split into words
+	var arr = string.toLowerCase().split(/\s/)
+	//Look at each word in array
+	for (var i = 0; i < arr.length; i++) {
+		//If special case where we need to look ahead
+		if (afinn["lookahead"][arr[i]]) {
+			//If we can look ahead and we see one of the special words
+			if (i + 1 < arr.length && afinn["lookahead"][arr[i]][arr[i + 1]]) {
+				//If we can look ahead and there's a third word
+				if (i + 2 < arr.length && afinn["lookahead"][arr[i]][arr[i + 1]]["then"]) {
+					//If the third word is right
+					if (afinn["lookahead"][arr[i]][arr[i + 1]]["then"] == arr[i + 2]) {
+						//Add the correct value
+						scoreSum += afinn["lookahead"][arr[i]][arr[i + 1]]["value"]
+						//Skip the two words we just looked at
+						i++
+						i++
+					}
+				//If there isn't a third word
+				} else {
+					//Add the correct value
+					scoreSum += afinn["lookahead"][arr[i]][arr[i + 1]]["value"]
+					//Skip the word we just looked at
+					i++
+				}
+			//If we don't see the word we're looking ahead for, fall back to simple check below.
+			} else if (afinn["simple"][arr[i]]) {
+				scoreSum += afinn["simple"][arr[i]]
+			}
+		//If this word is in the list, add the associated value
+		} else if (afinn["simple"][arr[i]]) {
+			scoreSum += afinn["simple"][arr[i]]
+		}
+	}
+	//Return proper values
+	return {"sum": scoreSum, "words": arr.length}
+}
+
+async function getUsers(args) {
+	return new Promise((res,rej) => {
+		let url = `https://api.groupme.com/v3/groups/${args.group_id}?token=${args.token}`;
+		$.get(url, (chat) => {
+			aggregate.members = {}
+			for (var i in chat.response.members) {
+				aggregate.members[chat.response.members[i].user_id] = chat.response.members[i].nickname;
+			}
+			res();
+		});
+	});
+}
+
+async function getMessages(args) {
+	return new Promise((resolve, reject) => {
+		//Create proper URL
+		let url = `https://api.groupme.com/v3/groups/${args.group_id}/messages?token=${args.token}&before_id=${args.last}&limit=100`
+		if (args.last == undefined) {
+			url = `https://api.groupme.com/v3/groups/${args.group_id}/messages?token=${args.token}&limit=100`
+		}
+		$.get(url, (chats, status) => {
+			if (status != "success") {
+				if (status == 'notmodified') { resolve(true) }
+				reject("Incorrect status '" + status + "'")
+				return
+			}
+			//Save object count
+			aggregate["count"] = chats.response.count
+			//Initialize size of current operation to 0
+			let size = 0
+			//For each message, add its info to object
+			for (var i in chats.response.messages) {
+				//Update size and last read message
+				size++
+				args.last = chats.response.messages[i].id
+
+				var score = {"sum": 0, "words": 0};
+				if (chats.response.messages[i].text) {
+					score = analyze(chats.response.messages[i].text)
+				}
+				//Save required information
+				aggregate.agg[chats.response.messages[i].id] = {
+					sender: chats.response.messages[i].sender_id,
+					name: chats.response.messages[i].name,
+					score: score.sum,
+					words: score.words,
+					time: chats.response.messages[i].created_at,
+					system: chats.response.messages[i].system
+				}
+			}
+			if (size >= 100) {
+				//Resolve with more to do
+				resolve(true);
+			}
+			else {
+				//Resolve with a finished state
+				resolve(false);
+			}
+		})
+	})
+}
+
+function parseMessages() {
+	//Initialize summary object
+	summary = {};
+	for (var i in aggregate.members) {
+		summary[i] = {
+			sent: 0,
+			name: "User left chat",
+			names: [],
+			scores: [],
+			totalScore: 0,
+			words: [],
+			totalWords: 0,
+			times: []
+		};
+	}
+	//Create all senders as needed in the object
+	for (var i in aggregate.agg) {
+		//We only care about users
+		if (aggregate.agg[i].system) continue;
+
+		//Initialize this user if needed
+		if (summary[aggregate.agg[i].sender] == undefined) {
+			//Default values (before adding anything): No score or words sent, and a name that assumes we cannot fetch their name.
+			summary[aggregate.agg[i].sender] = {
+				sent: 0,
+				name: "User left chat",
+				names: [],
+				scores: [],
+				totalScore: 0,
+				words: [],
+				totalWords: 0,
+				times: []
+			};
+		}
+
+		//Self-explanatory stuff
+		summary[aggregate.agg[i].sender].sent++;
+		summary[aggregate.agg[i].sender].totalScore += aggregate.agg[i].score;
+		summary[aggregate.agg[i].sender].totalWords += aggregate.agg[i].words;
+		//Add the values to the arrays for the graph
+		if (aggregate.agg[i].words > 0) {
+			summary[aggregate.agg[i].sender].scores.push(aggregate.agg[i].score);
+			summary[aggregate.agg[i].sender].words.push(aggregate.agg[i].words);
+			summary[aggregate.agg[i].sender].times.push(aggregate.agg[i].time);
+		}
+		//Add names if they're new
+		if (!summary[aggregate.agg[i].sender].names.includes(aggregate.agg[i].name)) {
+			summary[aggregate.agg[i].sender].names.push(aggregate.agg[i].name);
+		}
+	}
+	//Fill in sender names and finalize score
+	for (var i in summary) {
+		//Look for name in source
+		if (aggregate.members[i] != undefined) {
+			summary[i].name = aggregate.members[i]
+		} else if (summary[i].names.length > 0) {
+			//Else use most recent nickname
+			summary[i].name = summary[i].names[summary[i].names.length - 1]
+		}
+		//Finalize score
+		summary[i].final = summary[i].totalScore / summary[i].totalWords
+	}
 }
 
 $(document).ready(() => {
@@ -251,4 +443,3 @@ $(document).ready(() => {
 		startAgg()
 	})
 })
-

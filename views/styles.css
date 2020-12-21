@@ -28,7 +28,6 @@ h1 {
 
 .StupidADiv {
 	text-align: center;
-	margins: auto;
 }
 
 a {
@@ -61,6 +60,7 @@ th, td {
 	overflow: auto;
 	padding: 10px;
 }
+
 table {
 	width: 100%;
 	overflow: auto;
@@ -73,7 +73,15 @@ table {
 }
 
 .tableData2 {
-        background-color: #EEE
+    background-color: #EEE
+}
+
+.tableData3 {
+	background-color: #DDD
+}
+
+.topRow {
+	font-weight: bold;
 }
 
 .tableGraph {
@@ -167,4 +175,6 @@ table {
 	padding: 10px;
 }
 
-
+.smallText {
+	font-size: 1em;
+}
