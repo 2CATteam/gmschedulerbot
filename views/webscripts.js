@@ -45,6 +45,8 @@ function updateBasedOnToken() {
 		document.getElementById("date").disabled = false;
 		document.getElementById("time").disabled = false;
 		document.getElementById("toSend").disabled = false;
+		document.getElementById("image").disabled = false;
+
 
 		updateMessages(data);
 	};

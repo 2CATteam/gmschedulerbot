@@ -156,7 +156,7 @@ function showGraph(event) {
 	} else {
 		$(".tableGraph").remove()
 	}
-	$(event.target).parent().after('<tr class="tableGraph"><td colspan=6><div id="GraphDiv"><p id="Nicknames"></p><canvas id="Graph"></canvas></div></td></tr>')
+	$(event.target).parent().after('<tr class="tableGraph"><td colspan=7><div id="GraphDiv"><p id="Nicknames"></p><canvas id="Graph"></canvas></div></td></tr>')
 	let nickString = summary[$(event.target).parent().data("id")].names.toString().replace(/,/g, ", ")
 	if (nickString == "") { nickString = "None" }
 	$("#Nicknames").text("Names used: " + nickString)

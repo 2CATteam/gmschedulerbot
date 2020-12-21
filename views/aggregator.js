@@ -30,9 +30,11 @@ async function getMessages(args, object) {
 			let size = 0
 			//For each message, add its info to object
 			for (var i in chats.response.messages) {
+				//if (chats.response.messages[i].sender_id == "Target ID") {
 				//$.post(`https://api.groupme.com/v3/messages/${args.group_id}/${chats.response.messages[i].id}/unlike?token=${args.token}`, {}, console.log('Success!'))
 				//$.post(`https://api.groupme.com/v3/messages/${args.group_id}/${chats.response.messages[i].id}/like?token=${args.token}`, {}, console.log('Success!'))
-				//console.log(chats.response[i])
+				//}
+				//console.log(chats.response.messages[i].id)
 				//Update size and last read message
 				size++
 				args.last = chats.response.messages[i].id
