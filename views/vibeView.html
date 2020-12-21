@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="../styles.css">
+	<title>GroupMe scheduling service</title>
+	<meta charset="UTF-8">
+	<meta name="description" content="Tool for scheduling messages on GroupMe">
+	<meta name="keywords" content="GroupMe,message,schedule,scheduler,bot,free,service">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
+	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
+	<script type="text/javascript" src="../aggregator.js"></script>
+	<script type="text/javascript" src="../summaryscripts.js"></script>
+</head>
+<body>
+<div id="MainBody">
+<h1>GroupMe chat summary</h1>
+<p id="Description">See who's talked the most in your GroupMe chats.</p>
+
+<p>Step 1. Authenticate with GroupMe</p>
+<p id="completionLocation"> </p>
+<div class="StupidADiv">
+<a href="https://oauth.groupme.com/oauth/authorize?client_id=vqayyfiMIItz85NT7WofSXzn18qgmqzOuTctsGK3sB3fwTys">Click here to log in with GroupMe!</a>
+</div>
+<br/>
+
+<p>Step 2. Select the chat to summarize</p>
+<select id="Select" disabled>
+	<option id="placeholderOption" value="Invalid">-Please log in first-</option>
+</select>
+<br>
+
+<button id="Submit" disabled>Begin summary!</button>
+
+<p id="ErrorLocation"></p>
+<p id="ProgressLocation"></p>
+<p>Your chat's information will be shown below once it is fetched. Once it loads, click on users for more info!</p>
+
+<p class="SortByText">Sort by:</p>
+<select id="SortBy">
+	<option value="name">Name</option>
+	<option value="sent">Messages Sent</option>
+	<option value="attachments">Images Sent</option>
+	<option value="likes">Liked Received</option>
+	<option value="liked">Likes Given</option>
+	<option value="textLength">Average characters/message</option>
+	<option value="avgLikes">Average likes/message</option>
+</select>
+<select id="Direction">
+	<option value=-1>Descending</option>
+	<option value=1>Ascending</option>
+</select>
+
+<div id="TableDiv">
+<table>
+	<tr class="tableHead">
+		<th>Name</th>
+		<th>Messages<br/>sent</th>
+		<th>Images<br/>sent</th>
+		<th>Likes<br/>received</th>
+		<th>Likes<br/>given</th>
+		<th>Average<br/>characters/message</th>
+		<th>Average<br/>likes/message</th>
+	</tr>
+</table>
+<br/>
+<div class="StupidADiv">
+	<a href="https://www.schmessage.com/list">Check out my other tools!</a>
+</div>
+</div>
+
+</div>
+</body>
+</html>

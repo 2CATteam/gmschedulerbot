@@ -40,6 +40,12 @@ app.get('/summary/?', (req, res) =>
 	res.sendFile(path.join(__dirname + '/views/summaryView.html'))
 });
 
+//Summary website just gives summary screen
+app.get('/vibecheck/?', (req, res) =>
+{
+	res.sendFile(path.join(__dirname + '/views/vibeView.html'))
+});
+
 app.get('/list/?', (req, res) => {
 	res.sendFile(path.join(__dirname + '/views/tools.html'))
 });
@@ -51,10 +57,11 @@ app.get('/summary/authenticate/?', (req, res) =>
 	res.redirect("/summary/");
 });
 
-//Debug view, just to figure stuff out
-app.get('/debugPrint/', (req, res) =>
+//Authentication just adds a cookie and then redirects
+app.get('/vibecheck/authenticate/?', (req, res) =>
 {
-	res.sendFile(path.join(__dirname + '/views/debugView.html'))
+	res.cookie('token', req.query.access_token, {maxAge: 604800000});
+	res.redirect("/summary/");
 });
 
 //FAQ view
@@ -73,16 +80,6 @@ app.get('/loss/', (req, res) =>
 app.get('/anon/', (req, res) =>
 {
 	res.sendFile(path.join(__dirname + '/views/anonSendView.html'))
-});
-
-app.get('/anonymous/', (req, res) =>
-{
-        res.sendFile(path.join(__dirname + '/views/lgAnon.html'))
-});
-
-app.get('/phamilymann/', (req, res) =>
-{
-        res.sendFile(path.join(__dirname + '/views/lgAnon2.html'))
 });
 
 //Gets the chats from GroupMe
