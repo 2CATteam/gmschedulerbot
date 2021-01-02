@@ -100,12 +100,16 @@ app.post('/getInfo/', (req, res) =>
 		sender.getChats(infoJson.token, function(returnValue) {
 			//Returns info
 			sender.getDMs(infoJson.token, function(returnValue2) {
-				returnValue["DMs"] = returnValue2["DMs"]
-				const toSend = {
-					info: returnValue,
-					messages: messages
-				};
-				res.end(JSON.stringify(toSend));
+				sender.getId(infoJson.token, function(id, name) {
+					returnValue["DMs"] = returnValue2["DMs"]
+					const toSend = {
+						info: returnValue,
+						messages: messages,
+						userId: id,
+						name: name
+					};
+					res.end(JSON.stringify(toSend));
+				})
 			});
 		});
 	});
