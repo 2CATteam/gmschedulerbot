@@ -195,16 +195,19 @@ function showGraph(event) {
 	let key = $(event.target).parent().data("id")
 	let scoreQueue = []
 	let wordsQueue = []
-	for (var i = 0; i < summary[key].messages.length; i--) {
+	for (var i = 0; i < summary[key].messages.length; i++) {
 		scoreQueue.push(summary[key].messages[i].score)
-		if (scoreQueue.length > Math.round(summary[key].times.length / 10)) {
+		if (scoreQueue.length > Math.round(summary[key].messages.length / 10)) {
 			scoreQueue.shift()
 		}
 		wordsQueue.push(summary[key].messages[i].words)
-		if (wordsQueue.length > Math.round(summary[key].times.length / 10)) {
+		if (wordsQueue.length > Math.round(summary[key].messages.length / 10)) {
 			wordsQueue.shift()
 		}
 		if (summary[key].messages.length > 30 && i < 2) {
+			continue
+		}
+		if (summary[key].messages.length > 300 && i < 10) {
 			continue
 		}
 		data.push({ t: moment(new Date(summary[key].messages[i].time * 1000)), y: (sum(scoreQueue) / sum(wordsQueue)) })
@@ -406,11 +409,9 @@ function parseMessages() {
 			sent: 0,
 			name: "User left chat",
 			names: [],
-			scores: [],
 			totalScore: 0,
-			words: [],
 			totalWords: 0,
-			times: []
+			messages: []
 		};
 	}
 	//Create all senders as needed in the object
