@@ -129,33 +129,38 @@ async function startAgg() {
 		if ($("#chatButton").prop("checked")) {
 			args.state = 1
 			await getUsers()
-			getMessages().then(mainLoop)
+			await mainLoop(false)
+			showProgress(`Messages downloaded, parsing data...`)
+			parseMessages()
+			fillTable()
+			showProgress("Done!")
+			args.last = undefined
+			args.state = 0
 		} else {
 			aggregate.members = {}
 			aggregate[args.id] = args.name
-			
+			const numChats = $("#Select").children().length
+			$("#Select").children().each(function() {
+				args.group_id = this.value
+				args.last = undefined
+				await mainLoop()
+			})
 		}
 	}
 }
 
-function mainLoop(res) {
-	if (args.state == -1) {
-		args.state = 0;
-		args.last = undefined;
-		aggregate = {agg: {}, members: {}, count: 0}
-		summary = {}
-		return;
-	}
-	if (res) {
-		showProgress(`${Object.keys(aggregate.agg).length}/${aggregate.count} messages downloaded`)
-		getMessages().then(mainLoop)
-	} else {
-		showProgress(`Messages downloaded, parsing data...`)
-		parseMessages()
-		fillTable()
-		showProgress("Done!")
-		args.last = undefined
-		args.state = 0
+async function mainLoop(all, progress, numChats) {
+	var loop = true
+	while (loop) {
+		if (args.state == -1) {
+			args.state = 0;
+			args.last = undefined;
+			aggregate = {agg: {}, members: {}, count: 0}
+			summary = {}
+			return;
+		}
+		showProgress(`${all ? "Chat " + progress + "/" + numChats + ": ": ""}${Object.keys(aggregate.agg).length}/${aggregate.count} messages downloaded`)
+		loop = await getMessages(all)
 	}
 }
 
@@ -324,7 +329,7 @@ async function getUsers() {
 	});
 }
 
-async function getMessages() {
+async function getMessages(all) {
 	return new Promise((resolve, reject) => {
 		//Create proper URL
 		let url = `https://api.groupme.com/v3/groups/${args.group_id}/messages?token=${args.token}&before_id=${args.last}&limit=100`
