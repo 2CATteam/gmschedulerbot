@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../styles.css">
+	<link rel="stylesheet" type="text/css" href="styles.css">
 	<title>GroupMe vibe checker</title>
 	<meta charset="UTF-8">
 	<meta name="description" content="Tool for measuring positivity on GroupMe">
@@ -25,11 +25,17 @@
 </div>
 <br/>
 
-<p>Step 2. Select the chat to analyze</p>
+<p>Step 2. Select what to analyze</p>
+<input id="selfButton" type="radio" name="target" value="self" checked>
+<label for="selfButton">Analyze all of my own messages (May take a while)</label>
+<br/>
+<input id="chatButton" type="radio" name="target" value="chat">
+<label for="chatButton">Analyze a chat</label>
+<br/>
 <select id="Select" disabled>
 	<option id="placeholderOption" value="Invalid">-Please log in first-</option>
 </select>
-<br>
+<br/>
 
 <button id="Submit" disabled>Begin analysis!</button>
 

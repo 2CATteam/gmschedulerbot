@@ -13,7 +13,11 @@ p, select, input, textarea, button, a, h3, label {
 }
 
 #dmButton {
-        margin: 10px 0 10px 0;
+    margin: 10px 0 10px 0;
+}
+
+#selfButton {
+    margin: 10px 0 10px 0;
 }
 
 h1 {
