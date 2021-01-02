@@ -4,7 +4,8 @@ var aggregate = {agg: {}, members: {}, count: 0}
 //Holds data to be displayed
 var summary = {}
 
-//Holds current running data. Has token, group_id, and last added to it. State is used to wait for an existing task to finish before continuing. When running, state = 1. To cancel it, set state = -1. State = 0 when idle.
+//Holds current running data. Has token, group_id, and last added to it. State is used to wait for an existing task to finish before continuing.
+//When running, state = 1. To cancel it, set state = -1. State = 0 when idle.
 var args = {state: 0}
 
 function updateBasedOnToken() {
@@ -38,6 +39,9 @@ function updateBasedOnToken() {
 		//Remove placeholder
 		var toDelete = document.getElementById("placeholderOption");
 		dropdown.removeChild(toDelete)
+
+		args.user_id = data.userId
+		args.name = data.name
 
 		//Success!
 		dropdown.disabled = false;
@@ -116,18 +120,25 @@ function fillTable() {
 	})
 }
 
-function startAgg() {
+async function startAgg() {
 	if (args.state != 0) {
 		setTimeout(startAgg, 50)
 		return
 	}
 	else {
-		args.state = 1
-		getUsers(args).then(() => { getMessages(args).then(beginningCallback) })
+		if ($("#chatButton").prop("checked")) {
+			args.state = 1
+			await getUsers()
+			getMessages().then(mainLoop)
+		} else {
+			aggregate.members = {}
+			aggregate[args.id] = args.name
+			
+		}
 	}
 }
 
-function beginningCallback(res) {
+function mainLoop(res) {
 	if (args.state == -1) {
 		args.state = 0;
 		args.last = undefined;
@@ -137,7 +148,7 @@ function beginningCallback(res) {
 	}
 	if (res) {
 		showProgress(`${Object.keys(aggregate.agg).length}/${aggregate.count} messages downloaded`)
-		getMessages(args).then(beginningCallback)
+		getMessages().then(mainLoop)
 	} else {
 		showProgress(`Messages downloaded, parsing data...`)
 		parseMessages()
@@ -163,7 +174,7 @@ function showGraph(event) {
 	} else {
 		$(".tableGraph").remove()
 	}
-	$(event.target).parent().after('<tr class="tableGraph"><td colspan=7><div id="GraphDiv"><p id="Nicknames"></p><canvas id="Graph"></canvas></div></td></tr>')
+	$(event.target).parent().after('<tr class="tableGraph"><td colspan=4><div id="GraphDiv"><p id="Nicknames"></p><canvas id="Graph"></canvas></div></td></tr>')
 	let nickString = summary[$(event.target).parent().data("id")].names.toString().replace(/,/g, ", ")
 	if (nickString == "") { nickString = "None" }
 	$("#Nicknames").text("Names used: " + nickString)
@@ -200,7 +211,7 @@ function showGraph(event) {
 		options: {
 			title: {
 				display: false,
-				text: "Positivity over time"
+				text: "Positivity for user over time"
 			},
 			scales: {
 				xAxes: [{
@@ -260,6 +271,8 @@ function showGraph(event) {
 function analyze(string) {
 	//Initialize cumulative score
 	var scoreSum = 0
+	//Remove all punctuation
+	string = string.replace(/\W/g, " ").replace(/\s+/g, " ")
 	//Split into words
 	var arr = string.toLowerCase().split(/\s/)
 	//Look at each word in array
@@ -298,7 +311,7 @@ function analyze(string) {
 	return {"sum": scoreSum, "words": arr.length}
 }
 
-async function getUsers(args) {
+async function getUsers() {
 	return new Promise((res,rej) => {
 		let url = `https://api.groupme.com/v3/groups/${args.group_id}?token=${args.token}`;
 		$.get(url, (chat) => {
@@ -311,7 +324,7 @@ async function getUsers(args) {
 	});
 }
 
-async function getMessages(args) {
+async function getMessages() {
 	return new Promise((resolve, reject) => {
 		//Create proper URL
 		let url = `https://api.groupme.com/v3/groups/${args.group_id}/messages?token=${args.token}&before_id=${args.last}&limit=100`
@@ -427,10 +440,17 @@ function parseMessages() {
 $(document).ready(() => {
 	updateBasedOnToken()
 	$("#Select").change(() => {
+		$("#chatButton").prop("checked", true)
 		//Clear saved data and refreshes table, then cancels job.
 		aggregate = {agg: {}, members: {}, count: 0}
 		summary = {}
 		fillTable()
+		if (args.state != 0) {
+			args.state = -1
+		}
+	})
+	//When changing which data analyzed, cancel job
+	$("input[type='radio']").change(function() {
 		if (args.state != 0) {
 			args.state = -1
 		}
