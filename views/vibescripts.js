@@ -59,7 +59,7 @@ function showProgress(toShow) {
 	$("#ProgressLocation").text(toShow)
 }
 
-function fillTable() {
+function fillTable(self) {
 	$("td").remove()
 	$(".tableGraph").remove()
 	let order = Object.keys(summary)
@@ -86,7 +86,7 @@ function fillTable() {
 			}
 		});
 	}
-	if (order.length > 0) { 
+	if (order.length > 0 && !self) { 
 		var sent = 0
 		var scores = 0
 		var words = 0
@@ -132,7 +132,7 @@ async function startAgg() {
 			await mainLoop(false)
 			showProgress(`Messages downloaded, parsing data...`)
 			parseMessages()
-			fillTable()
+			fillTable(false)
 			showProgress("Done!")
 			args.last = undefined
 			args.state = 0
@@ -143,13 +143,12 @@ async function startAgg() {
 			for (var i = 0; i < $("#Select").children().length; i++) {
 				args.group_id = $("#Select").children()[i].value
 				args.last = undefined
-				console.log(i)
 				await mainLoop(true, parseInt(i) + 1, numChats)
 			}
-			console.log("Done with loop")
 			showProgress(`All messages downloaded, parsing data...`)
 			parseMessages()
-			fillTable()
+			summary[args.user_id].name = args.name
+			fillTable(true)
 			showProgress("Done!")
 			args.last = undefined
 			args.state = 0
@@ -196,16 +195,19 @@ function showGraph(event) {
 	let key = $(event.target).parent().data("id")
 	let scoreQueue = []
 	let wordsQueue = []
-	for (var i = summary[key].times.length - 1; i >= 0; i--) {
-		scoreQueue.push(summary[key].scores[i])
-		if (scoreQueue.length > Math.round(summary[key].times.length / 8)) {
+	for (var i = 0; i < summary[key].messages.length; i--) {
+		scoreQueue.push(summary[key].messages[i].score)
+		if (scoreQueue.length > Math.round(summary[key].times.length / 10)) {
 			scoreQueue.shift()
 		}
-		wordsQueue.push(summary[key].words[i])
-		if (wordsQueue.length > Math.round(summary[key].times.length / 8)) {
+		wordsQueue.push(summary[key].messages[i].words)
+		if (wordsQueue.length > Math.round(summary[key].times.length / 10)) {
 			wordsQueue.shift()
 		}
-		data.push({ t: moment(new Date(summary[key].times[i]*1000)), y: (sum(scoreQueue) / sum(wordsQueue)) })
+		if (summary[key].messages.length > 30 && i < 2) {
+			continue
+		}
+		data.push({ t: moment(new Date(summary[key].messages[i].time * 1000)), y: (sum(scoreQueue) / sum(wordsQueue)) })
 	}
 	let ctx = $("#Graph");
 	var graph = new Chart(ctx, {
@@ -291,6 +293,10 @@ function analyze(string) {
 	var arr = string.toLowerCase().split(/\s/)
 	//Look at each word in array
 	for (var i = 0; i < arr.length; i++) {
+		//Handle special cases of object
+		if (arr[i] == "constructor" || arr[i] == "__proto__" || arr[i] == "__noSuchMethod__") {
+			continue
+		}
 		//If special case where we need to look ahead
 		if (afinn["lookahead"][arr[i]]) {
 			//If we can look ahead and we see one of the special words
@@ -419,11 +425,9 @@ function parseMessages() {
 				sent: 0,
 				name: "User left chat",
 				names: [],
-				scores: [],
 				totalScore: 0,
-				words: [],
 				totalWords: 0,
-				times: []
+				messages: []
 			};
 		}
 
@@ -431,11 +435,13 @@ function parseMessages() {
 		summary[aggregate.agg[i].sender].sent++;
 		summary[aggregate.agg[i].sender].totalScore += aggregate.agg[i].score;
 		summary[aggregate.agg[i].sender].totalWords += aggregate.agg[i].words;
-		//Add the values to the arrays for the graph
+		//Add the values to the array for the graph
 		if (aggregate.agg[i].words > 0) {
-			summary[aggregate.agg[i].sender].scores.push(aggregate.agg[i].score);
-			summary[aggregate.agg[i].sender].words.push(aggregate.agg[i].words);
-			summary[aggregate.agg[i].sender].times.push(aggregate.agg[i].time);
+			summary[aggregate.agg[i].sender].messages.push({
+				score: aggregate.agg[i].score,
+				words: aggregate.agg[i].words,
+				time: aggregate.agg[i].time
+			})
 		}
 		//Add names if they're new
 		if (!summary[aggregate.agg[i].sender].names.includes(aggregate.agg[i].name)) {
@@ -453,6 +459,16 @@ function parseMessages() {
 		}
 		//Finalize score
 		summary[i].final = summary[i].totalScore / summary[i].totalWords
+		//Sort details (Needed when doing solo)
+		summary[i].messages.sort((a, b) => {
+			if (a.time < b.time) {
+				return -1
+			} else if (a.time > b.time) {
+				return 1
+			} else {
+				return 0
+			}
+		})
 	}
 }
 
