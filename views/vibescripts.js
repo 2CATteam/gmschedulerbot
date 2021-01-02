@@ -140,16 +140,25 @@ async function startAgg() {
 			aggregate.members = {}
 			aggregate[args.id] = args.name
 			const numChats = $("#Select").children().length
-			$("#Select").children().each(function() {
-				args.group_id = this.value
+			for (var i = 0; i < $("#Select").children().length; i++) {
+				args.group_id = $("#Select").children()[i].value
 				args.last = undefined
-				await mainLoop()
-			})
+				console.log(i)
+				await mainLoop(true, parseInt(i) + 1, numChats)
+			}
+			console.log("Done with loop")
+			showProgress(`All messages downloaded, parsing data...`)
+			parseMessages()
+			fillTable()
+			showProgress("Done!")
+			args.last = undefined
+			args.state = 0
 		}
 	}
 }
 
 async function mainLoop(all, progress, numChats) {
+	args.messagesDone = 0
 	var loop = true
 	while (loop) {
 		if (args.state == -1) {
@@ -159,7 +168,7 @@ async function mainLoop(all, progress, numChats) {
 			summary = {}
 			return;
 		}
-		showProgress(`${all ? "Chat " + progress + "/" + numChats + ": ": ""}${Object.keys(aggregate.agg).length}/${aggregate.count} messages downloaded`)
+		showProgress(`${all ? "Chat " + progress + "/" + numChats + ": ": ""}${args.messagesDone}/${aggregate.count} messages downloaded`)
 		loop = await getMessages(all)
 	}
 }
@@ -350,7 +359,12 @@ async function getMessages(all) {
 			for (var i in chats.response.messages) {
 				//Update size and last read message
 				size++
+				args.messagesDone++
 				args.last = chats.response.messages[i].id
+
+				if (all && chats.response.messages[i].sender_id !== args.user_id) {
+					continue
+				}
 
 				var score = {"sum": 0, "words": 0};
 				if (chats.response.messages[i].text) {
