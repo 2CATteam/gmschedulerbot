@@ -1,5 +1,5 @@
 //Holds message data, member data, and number of messages. Gets filled.
-var aggregate = {agg: {}, members: {}, count: 0}
+var aggregate = {agg: {}, members: {}, chatNames: [], count: 0}
 
 //Holds data to be displayed
 var summary = {}
@@ -122,6 +122,7 @@ function fillTable() {
 </tr>`
 		let headElement = $(header)
 		$("table").append(headElement)
+		$(headElement).data("id", "WHOLECHAT")
 	}
 	for (var i in order) {
 		let row = `<tr class="tableData${ i%2 == 0 ? 1 : 2}">
@@ -181,14 +182,38 @@ function showGraph(event) {
 	} else {
 		$(".tableGraph").remove()
 	}
-	$(event.target).parent().after('<tr class="tableGraph"><td colspan=7><div id="GraphDiv"><p id="Nicknames"></p><canvas id="Graph"></canvas></div></td></tr>')
-	let nickString = summary[$(event.target).parent().data("id")].names.toString().replace(/,/g, ", ")
-	if (nickString == "") { nickString = "None" }
-	$("#Nicknames").text("Names used: " + nickString)
 	let data = []
-	let times = summary[$(event.target).parent().data("id")].times
-	for (var i in times) {
-		data.push({ t: moment(new Date(times[i]*1000)), y: times.length-parseInt(i) })
+	let nickString = ""
+	if ($(event.target).parent().data("id") === "WHOLECHAT") {
+		$(event.target).parent().after('<tr class="tableGraph"><td colspan=7><div id="GraphDiv"><p id="Nicknames"></p><canvas id="Graph"></canvas></div></td></tr>')
+		nickString = aggregate.chatNames.toString().replace(/,/g, ", ")
+		if (nickString != "") {
+				$("#Nicknames").text("Chat names: " + nickString)
+		}
+		for (var j in summary) {
+			let times = summary[j].times
+			for (var i in times) {
+				data.push({ t: moment(new Date(times[i]*1000)), y: times.length-parseInt(i) })
+			}
+		}
+		data.sort((a, b) => {
+			return a.t.unix() - b.t.unix()
+		})
+		let y = 0
+		for (var i in data) {
+			data[i].y = y
+			y++
+		}
+		console.log(data)
+	} else {
+		$(event.target).parent().after('<tr class="tableGraph"><td colspan=7><div id="GraphDiv"><p id="Nicknames"></p><canvas id="Graph"></canvas></div></td></tr>')
+		nickString = summary[$(event.target).parent().data("id")].names.toString().replace(/,/g, ", ")
+		if (nickString == "") { nickString = "None" }
+		$("#Nicknames").text("Names used: " + nickString)
+		let times = summary[$(event.target).parent().data("id")].times
+		for (var i in times) {
+			data.push({ t: moment(new Date(times[i]*1000)), y: times.length-parseInt(i) })
+		}
 	}
 	let ctx = $("#Graph");
 	var graph = new Chart(ctx, {
@@ -268,7 +293,7 @@ $(document).ready(() => {
 	updateBasedOnToken()
 	$("#Select").change(() => {
 		//Clear saved data and refreshes table, then cancels job.
-		aggregate = {agg: {}, members: {}, count: 0}
+		aggregate = {agg: {}, members: {}, chatNames: [], count: 0}
 		summary = {}
 		fillTable()
 		if (args.state != 0) {

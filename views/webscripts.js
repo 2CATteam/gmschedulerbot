@@ -77,7 +77,7 @@ function submit() {
 			chat = select.options[select.selectedIndex].value
 			var image = $("#image").data('path')
 			var request = new XMLHttpRequest();
-			request.open("POST", window.location.href + "submitMessage/");
+			request.open("POST", "/submitMessage/");
 			request.setRequestHeader('Content-Type', 'application/json');
 			const toSend = JSON.stringify({
 				token: token,
@@ -132,7 +132,7 @@ function deleteMessage(button) {
 	var parent = $(button.parentElement);
 
 	var request = new XMLHttpRequest();
-	request.open("POST", window.location.href + "deleteMessage/");
+	request.open("POST", "/deleteMessage/");
 	request.setRequestHeader('Content-Type', 'application/json');
 	const toSend = JSON.stringify({
 		token: token,
@@ -240,7 +240,10 @@ function dateFromStrings(date, time) {
 		parseInt(timeSplit[0]),
 		parseInt(timeSplit[1])
 	];
-	var toReturn = new Date(ints[0], ints[1]-1, ints[2], ints[3], ints[4]);
+	if (timeSplit.length > 2) {
+		ints.push(parseInt(timeSplit[2]))
+	}
+	var toReturn = new Date(ints[0], ints[1]-1, ints[2], ints[3], ints[4], ints[5] ? ints[5] : null);
 	return toReturn;
 }
 
@@ -301,11 +304,20 @@ function imageUpload(event) {
 	data.append('token', token)
 
 	var request = new XMLHttpRequest();
-	request.open("POST", window.location.href + "uploadImage/");
+	request.open("POST", "/uploadImage/");
 	request.send(data);
 	request.onload = () => {
 		if (request.status > 399) {
-			showError("Something went wrong with your image upload. Please try again, or if this error persists, try with a different file.")
+			if (request.status == 413) {
+				showError("Your file was too large! The max size is 8MB.")
+				return
+			}
+			try {
+				let data = JSON.parse(request.response)
+				showError("Upload failed with the following error: " + data.message)
+			} catch(err) {
+				showError("Something went wrong with your image upload. Please try again, or if this error persists, try with a different file.")
+			}
 			$("#SubmitButton").prop("disabled", false);
 			return;
 		}

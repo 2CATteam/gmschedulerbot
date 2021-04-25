@@ -6,6 +6,9 @@ async function getUsers(args, object) {
 			for (var i in chat.response.members) {
 				object.members[chat.response.members[i].user_id] = chat.response.members[i].nickname;
 			}
+			console.log(chat.response.name)
+			console.log((chat.response.updated_at - chat.response.created_at) / 86400)
+			console.log(chat.response.members.length)
 			res();
 		});
 	});
@@ -47,6 +50,14 @@ async function getMessages(args, object) {
 				}
 				var textLength = 0;
 				if (chats.response.messages[i].text) { textLength = chats.response.messages[i].text.length }
+
+				if (chats.response.messages[i].system && chats.response.messages[i].text && chats.response.messages[i].text.match(/(?:.+) changed the group's name to (.+)/i)) {
+					if (!object.chatNames) {
+						console.log(object)
+						object.chatNames = []
+					}
+					object.chatNames.push(chats.response.messages[i].text.match(/(?:.+) changed the group's name to (.+)/i)[1])
+				}
 				//Save required information
 				object.agg[chats.response.messages[i].id] = {
 					sender: chats.response.messages[i].sender_id,

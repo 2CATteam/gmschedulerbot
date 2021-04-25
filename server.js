@@ -27,6 +27,12 @@ app.get('/', (req, res) =>
 	res.sendFile(path.join(__dirname + '/views/baseView.html'))
 });
 
+//Fallback website just gives fallback screen
+app.get('/fallback', (req, res) =>
+{
+	res.sendFile(path.join(__dirname + '/views/fallbackView.html'))
+});
+
 //Authentication just adds a cookie and then redirects
 app.get('/authenticate/?', (req, res) =>
 {
@@ -180,7 +186,11 @@ app.post('/uploadImage/?', (req, res) => {
 			res.end(JSON.stringify({ status: 'error', message: error }))
 			return
 		}
-		sender.uploadImage(path, req.cookies.token, (url) => {
+		sender.uploadImage(path, req.cookies.token, (url, err) => {
+			if (err) {
+				res.writeHead(400, {'Content-Type': 'application.json' })
+				res.end(JSON.stringify({ status: 'error', message: err}))
+			}
 			res.writeHead(200, { 'Content-Type': 'application/json' })
 			res.end(JSON.stringify({ status: 'success', path: url }))
 		})
