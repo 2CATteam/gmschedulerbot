@@ -1,0 +1,51 @@
+.calendarColumn {
+	max-width: 320px;
+}
+
+.equalWidth {
+	flex-grow: 1;
+	flex-shrink: 1;
+	flex-basis: 0;
+}
+
+.silentButton {
+	border: none;
+	background: none;
+	padding: 0;
+}
+
+.greyButton {
+	color: #AAA;
+}
+
+.disabledButton {
+	background-color: LightGray;
+}
+
+.buttonSelected {
+	background: #0075FF;
+	color: white; 
+}
+
+.dateSelectorWrapper {
+	display: inline-block;
+	border: 2px solid black;
+}
+
+.hoursButton, .minuteButton, .amPmButton {
+	height: 100%;
+}
+
+.clocksWrapper {
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	position: relative;
+}
+
+.hoursClockWrapper, .minutesClockWrapper {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+}

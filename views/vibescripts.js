@@ -228,6 +228,8 @@ function showGraph(event) {
 			}]
 		},
 		options: {
+			responsive: true,
+			aspectRatio: 1,
 			title: {
 				display: false,
 				text: "Positivity for user over time"

@@ -2,6 +2,7 @@ var chats = []
 var DMs = []
 var messages = []
 var my_id = null
+var picker = null
 
 function updateBasedOnToken() {
 	var token = getCookie("token")
@@ -28,8 +29,6 @@ function updateBasedOnToken() {
 		populateDropdowns()
 		
 		document.getElementById("completionLocation").innerHTML = "Authentication was a success! You can now schedule a message.";
-		document.getElementById("date").disabled = false;
-		document.getElementById("time").disabled = false;
 		document.getElementById("toSend").disabled = false;
 		document.getElementById("image").disabled = false;
 
@@ -82,9 +81,6 @@ function submit() {
 	completeCheck(function() {
 		validCheck(function() {
 			var token = getCookie("token")
-			var dateVal = document.getElementById("date").value;
-			var timeVal = document.getElementById("time").value;
-			var datetime = dateFromStrings(dateVal, timeVal);
 			var messageType = "chat";
 			if (document.getElementsByName("messageType")[0].checked) {
 				messageType = document.getElementsByName("messageType")[0].value;
@@ -108,7 +104,8 @@ function submit() {
 			const toSend = JSON.stringify({
 				token: token,
 				chat: chat,
-				next: datetime.getTime(),
+				next: picker.getFirst(),
+				times: picker.getTimes(),
 				toSend: document.getElementById("toSend").value,
 				image: image,
 				messageType: messageType
@@ -128,10 +125,6 @@ function completeCheck(callback)
 {
 	if (document.getElementById("Select").value=="Invalid")
 	{showError("Authentication is required. If you have logged in with GroupMe, make sure you have cookies enabled.")}
-	else if (document.getElementById("date").value=="")
-	{showError("Date is required")}
-	else if (document.getElementById("time").value=="")
-	{showError("Time is required")}
 	else if (document.getElementById("toSend").value=="" && !$("#image").data('path'))
 	{showError("Text is required")}
 	else { callback() }
@@ -142,12 +135,7 @@ function validCheck(callback) {
 		showError("Authentication failed. Make sure cookies are turned on.");
 		return;
 	}
-	var dateVal = document.getElementById("date").value;
-	var timeVal = document.getElementById("time").value;
-	var datetime = dateFromStrings(dateVal, timeVal);
-	if (!datetime)
-		{showError("Date could not be read. Please check your formatting.")}
-	if (datetime < new Date())
+	if (picker.getFirst() < new Date())
 		{showError("Message cannot be scheduled for the past.")}
 	else if (document.getElementById("toSend").value.length > 1000)
 		{showError("Maximum length is 1000 characters.")}
@@ -183,7 +171,6 @@ function updateMessages() {
 	for (var x in messages) {
 		var subDiv = document.createElement("div");
 		subDiv.setAttribute("class", "subDiv");
-		subDiv.setAttribute("class", "py-3");
 		$(subDiv).data("job_id", messages[x].job_id)
 
 		var groupText = document.createElement("p");
@@ -394,6 +381,7 @@ function setCookie(key, value) {
 }
 
 $(document).ready(() => {
+	picker = new dateTimePicker("#dateSelectorContainer", false)
 	updateBasedOnToken()
 	$("#image").change((event) => {
 		imageUpload(event)
