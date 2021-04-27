@@ -3,6 +3,10 @@
 	min-width: 230px;
 }
 
+.intervalFilter {
+	padding: .375rem 0rem .375rem .375rem !important;
+}
+
 .equalWidth {
 	flex-grow: 1;
 	flex-shrink: 1;
