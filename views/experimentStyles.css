@@ -86,7 +86,7 @@ table {
 #MainBody {
 	margin: 25px 5% 25px 5%;
 	padding: 25px 5% 25px 5%;
-	border: 2px solid #008ccc;
+	border: 1px solid #008ccc;
 	border-radius: 30px;
 	background-color: white;
 	max-width: 1200px;
