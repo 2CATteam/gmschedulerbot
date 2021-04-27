@@ -191,13 +191,15 @@ function updateMessages() {
 		groupText.innerHTML = "<b>Chat: </b>" + groupNameFromMessage(x);
 		$(subDiv).data("chat", messages[x].chat)
 		subDiv.appendChild(groupText);
-
-		var tempDate = new Date(messages[x].next);
-		var timeText = document.createElement("p");
-		timeText.setAttribute("class", "timeText");
-		timeText.innerHTML = "<b>Time: </b>" + tempDate.toLocaleString();
-		$(subDiv).data("time", tempDate);
-		subDiv.appendChild(timeText);
+		
+		for (var i in messagex[x].times) {
+			var tempDate = new Date(messages[x].times[i]);
+			var timeText = document.createElement("p");
+			timeText.setAttribute("class", "timeText");
+			timeText.innerHTML = "<b>Time: </b>" + tempDate.toLocaleString();
+			$(subDiv).data("time", tempDate);
+			subDiv.appendChild(timeText);
+		}
 
 		var textText = document.createElement("p");
 		textText.setAttribute("class", "textText");
