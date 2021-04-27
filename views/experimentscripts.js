@@ -372,19 +372,6 @@ function imageUpload(event) {
 	}
 }
 
-function anonSend() {
-	const toSendText = document.getElementById("toSend").value;
-	const address = "https://api.groupme.com/v3/bots/post";
-	var request = new XMLHttpRequest();
-	request.open("POST", address);
-	request.setRequestHeader('Content-Type', 'application/json');
-	const toSend = JSON.stringify({
-		bot_id: "ffb4d00d6cbebbda610d4751f4",
-		text: toSendText
-	});
-	request.send(toSend);
-}
-
 function getCookie(key) {
 	obj = {}
 	list = document.cookie.split(";")
