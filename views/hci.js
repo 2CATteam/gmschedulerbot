@@ -90,7 +90,9 @@ class dateTimePicker {
 					datesArray.push(toAdd.valueOf())
 					toAdd.add(num, units)
 				}
-				return datesArray
+				return datesArray.sort(function(a, b) {
+					return a - b
+				})
 			case "days":
 				datesArray = []
 				toAdd.minutes(this.time.minutes)
@@ -137,17 +139,18 @@ class dateTimePicker {
 					
 					toAdd.add(1, "day")
 				}
-				return datesArray
+				return datesArray.sort(function(a, b) {
+					return a - b
+				})
 			case "multiple":
-				return this.firstCalendar.dates
+				return this.firstCalendar.dates.sort(function(a, b) {
+					return a - b
+				})
 		}
 	}
 	
 	getFirst() {
-		let toReturn = moment(this.firstCalendar.date)
-		toReturn.minutes(this.time.minutes)
-		toReturn.hours(this.time.hours)
-		return toReturn.valueOf()
+		return this.getTimes()[0]
 	}
 	
 	showMode() {
