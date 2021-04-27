@@ -113,6 +113,7 @@ function submit() {
 			
 			if (first < (new Date()).getTime()) {
 				showError("Message cannot be scheduled for the past.")
+				return
 			}
 			
 			var request = new XMLHttpRequest();
