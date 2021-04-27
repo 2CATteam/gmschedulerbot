@@ -1,7 +1,7 @@
 class dateTimePicker {
 	constructor(parent) {
 		this.parent = $(parent)
-		$(parent).load("hci.html", this.load.bind(this))
+		$(parent).load("/hci.html", this.load.bind(this))
 	}
 	
 	load() {
