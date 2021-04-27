@@ -111,6 +111,10 @@ function submit() {
 			
 			let first = times[0];
 			
+			if (first < (new Date()).getTime()) {
+				showError("Message cannot be scheduled for the past.")
+			}
+			
 			var request = new XMLHttpRequest();
 			request.open("POST", "/submitMessage/");
 			request.setRequestHeader('Content-Type', 'application/json');
