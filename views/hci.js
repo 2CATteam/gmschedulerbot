@@ -18,11 +18,129 @@ class dateTimePicker {
 		this.parent.find(".repeatTypeSelect").change({parent: this}, function(evt) {
 			evt.data.parent.setMode($(this).val())
 		})
+		
+		this.parent.find(".intervalSettings .intervalNumber").change(function() {
+			this.secondCalendar.setNumbers()
+		}.bind(this))
+		this.parent.find(".intervalSettings .intervalUnit").change(function() {
+			this.secondCalendar.setNumbers()
+		}.bind(this))
+		
+		this.parent.find(".daysSettings label input").click(function() {
+			this.secondCalendar.setNumbers()
+		}.bind(this))
+		
+		this.parent.find(".daysSettings select").change(function() {
+			this.secondCalendar.setNumbers()
+		}.bind(this))
+		
+		this.showRepeat = false
+		
+		this.parent.find(".showHideRepeat").click(() => {
+			if (!this.showRepeat) {
+				//this.parent.find(".repeatSelect").removeClass("hidden")
+				this.parent.find(".repeatSelect").slideDown()
+				//this.parent.find(".settingsColumn").removeClass("hidden")
+				this.parent.find(".settingsColumn").slideDown()
+				this.showRepeat = true
+				this.parent.find(".showHideRepeat").text("Hide repeat options")
+				this.parent.find(".showHideRepeat").removeClass("animationFixer")
+			} else {
+				this.parent.find(".repeatSelect").slideUp(function() {
+					//$(this).addClass("hidden")
+				})
+				this.parent.find(".settingsColumn").slideUp(function() {
+					//$(this).addClass("hidden")
+					$(this).parent().find(".showHideRepeat").addClass("animationFixer")
+				})
+				this.showRepeat = false
+				this.parent.find(".showHideRepeat").text("Show repeat options")
+			}
+		})
 	}
 	
 	getTimes() {
-		let toReturn = [this.getFirst()]
-		return toReturn
+		let datesArray = []
+		let toAdd = moment(this.firstCalendar.date)
+		let toCompare = moment(this.secondCalendar.date)
+		
+		switch (this.mode) {
+			case "single":
+				let toReturn = moment(this.firstCalendar.date)
+				toReturn.minutes(this.time.minutes)
+				toReturn.hours(this.time.hours)
+				return [toReturn.valueOf()]
+			case "interval":
+				datesArray = []
+				toAdd.minutes(this.time.minutes)
+				toAdd.hours(this.time.hours)
+				
+				let num = parseFloat(this.parent.find(".intervalNumber").val())
+				if (num < 1 || !Number.isInteger(num)) {
+					throw "Error: Interval number must be a positive integer"
+				}
+				
+				let units = this.parent.find(".intervalUnit").val()
+				
+				toCompare.hours(23)
+				toCompare.minutes(59)
+				toCompare.seconds(59)
+				
+				while (toAdd <= toCompare) {
+					datesArray.push(toAdd.valueOf())
+					toAdd.add(num, units)
+				}
+				return datesArray
+			case "days":
+				datesArray = []
+				toAdd.minutes(this.time.minutes)
+				toAdd.hours(this.time.hours)
+				
+				toCompare.hours(23)
+				toCompare.minutes(59)
+				toCompare.seconds(59)
+				
+				let filter = this.parent.find(".intervalFilter").val()
+				
+				let n = Math.ceil(this.firstCalendar.date.date() / 7)
+				
+				let daysArray = []
+				
+				for (let i = 2; i < 2 + 7; i++) {
+					daysArray.push(this.parent.find(`.daysSettings :nth-child(${i}) :nth-child(1)`).prop("checked") == true)
+				}
+				
+				while (toAdd <= toCompare) {
+					let day = toAdd.day()
+					
+					if (filter == "nth") {
+						if (Math.ceil(toAdd.date() / 7) != n) {
+							toAdd.add(1, "day")
+							continue
+						}
+					}
+					
+					if (filter == "last") {
+						if (toAdd.daysInMonth() >= toAdd.date() + 7) {
+							toAdd.add(1, "day")
+							continue
+						}
+					}
+					
+					if (daysArray[day]) {
+						datesArray.push(toAdd.valueOf())
+					}
+					
+					if (day == 6 && filter == "alternating") {
+						toAdd.add(7, "days")
+					}
+					
+					toAdd.add(1, "day")
+				}
+				return datesArray
+			case "multiple":
+				return this.firstCalendar.dates
+		}
 	}
 	
 	getFirst() {
@@ -39,7 +157,9 @@ class dateTimePicker {
 		if (this.parent.find(".calendarColumn2:hidden").length > 0 && (this.mode === "interval" || this.mode === "days")) {
 			this.parent.find(".firstLabel").slideDown()
 			this.parent.find(`.calendarColumn2`).removeClass("hidden")
-			this.parent.find(".calendarColumn2").slideDown()
+			this.parent.find(".calendarColumn2").slideDown(() => {
+				this.secondCalendar.setNumbers()
+			})
 		}
 	}
 	
@@ -62,6 +182,8 @@ class dateTimePicker {
 					this.parent.find(".multipleSettings").slideUp(400, this.showMode.bind(this))
 				}
 				this.firstCalendar.setMode("single")
+				this.secondCalendar.setFilter(null)
+				this.firstCalendar.setRipple(null)
 				break
 			case "interval":
 				if (this.parent.find(".daysSettings:visible").length > 0) {
@@ -75,6 +197,37 @@ class dateTimePicker {
 				}
 				
 				this.firstCalendar.setMode("single")
+				this.secondCalendar.setFilter(function(x, y, date) {
+					let num = parseFloat(this.parent.find(".intervalNumber").val())
+					let units = this.parent.find(".intervalUnit").val()
+					
+					if (date < this.firstCalendar.date) {
+						return true
+					}
+					
+					if (units == "months") {
+						if(this.firstCalendar.date.date() != date.date()) {
+							return true
+						}
+						return date.diff(this.firstCalendar.date, "months") % num != 0
+					}
+					
+					let difference = date.diff(this.firstCalendar.date, "days")
+					
+					if (units == "weeks") {
+						difference /= 7
+					}
+					
+					if (difference % num == 0) {
+						return false
+					} else {
+						return true
+					}
+				}.bind(this))
+				this.firstCalendar.setRipple(() => {
+					this.secondCalendar.setNumbers()
+				})
+				
 				break
 			case "days":
 				if (this.parent.find(".intervalSettings:visible").length > 0) {
@@ -88,6 +241,103 @@ class dateTimePicker {
 				}
 				
 				this.firstCalendar.setMode("single")
+				this.secondCalendar.setFilter(function(x, y, date) {
+					if (date < this.firstCalendar.date) {
+						return true
+					}
+					
+					let filter = this.parent.find(".intervalFilter").val()
+					let checkbox = this.parent.find(`.daysSettings :nth-child(${date.day() + 2}) input`)
+					
+					if (!checkbox.prop("checked")) {
+						return true
+					}
+					
+					if (filter == "nth") {
+						if (Math.ceil(date.date() / 7) != parseInt(this.parent.find(".weekNumber").text())) {
+							return true
+						}
+					}
+					
+					if (filter == "last") {
+						if (date.daysInMonth() >= date.date() + 7) {
+							return true
+						}
+					}
+					
+					if (filter == "alternating") {
+						let startOfWeek1 = moment(this.firstCalendar.date).subtract(this.firstCalendar.date.weekday(), "days")
+						let startOfWeek2 = moment(date).subtract(date.weekday(), "days")
+						if (Math.round(startOfWeek2.diff(startOfWeek1, "weeks")) % 2 == 1) {
+							return true
+						}
+					}
+					
+					return false
+				}.bind(this))
+				this.firstCalendar.setRipple(function(date) {
+					this.parent.find(".daysSettings label input").prop("disabled", false)
+					let checkbox = this.parent.find(`.daysSettings :nth-child(${date.day() + 2}) input`)
+					checkbox.prop("disabled", true)
+					checkbox.prop("checked", true)
+					checkbox.change()
+					
+					let rank = Math.ceil(date.date() / 7)
+					let text = rank.toString()
+					
+					switch (rank) {
+						case 1:
+							text += "st"
+							break
+						case 2:
+							text += "nd"
+							break
+						case 3:
+							text += "rd"
+							break
+						default:
+							text += "th"
+							break
+					}
+					
+					text += " instance each month"
+					this.parent.find(".daysSettings .weekNumber").text(text)
+					
+					if (date.date() + 7 > date.daysInMonth()) {
+						this.parent.find(".lastOption").removeClass("hidden")
+					} else {
+						if (this.parent.find(".intervalFilter").val() == "last") {
+							this.parent.find(".intervalFilter").val("all")
+						}
+						this.parent.find(".lastOption").addClass("hidden")
+					}
+
+					this.secondCalendar.setNumbers()
+				}.bind(this))
+				
+				let rank = Math.ceil(this.firstCalendar.date.date() / 7)
+				
+				let text = rank.toString()
+				
+				switch (rank) {
+					case 1:
+						text += "st"
+						break
+					case 2:
+						text += "nd"
+						break
+					case 3:
+						text += "rd"
+						break
+					default:
+						text += "th"
+						break
+				}
+				
+				text += " instance each month"
+
+				this.parent.find(".daysSettings .weekNumber").text(text)
+				
 				break
 			case "multiple":
 				if (this.parent.find(".calendarColumn2:visible").length > 0) {
@@ -106,6 +356,8 @@ class dateTimePicker {
 				}
 				
 				this.firstCalendar.setMode("multiple")
+				this.secondCalendar.setFilter(null)
+				this.firstCalendar.setRipple(null)
 				break
 		}
 	}
@@ -133,6 +385,9 @@ class calendar {
 		this.date.minutes(0)
 		this.date.hours(0)
 		
+		this.dates = []
+		this.considering = []
+		
 		this.displayDate = moment(this.date)
 		
 		this.mode = mode ? mode : "single"
@@ -151,6 +406,9 @@ class calendar {
 			let date = moment($(this).val())
 			if (date.isValid()) {
 				evt.data.setDate(date)
+				$(this).removeClass("is-invalid")
+			} else {
+				$(this).addClass("is-invalid")
 			}
 		})
 	}
@@ -158,6 +416,13 @@ class calendar {
 	setFilter(func) {
 		this.filterFunction = func
 		this.setNumbers()
+	}
+	
+	setRipple(func) {
+		this.rippleFunction = func
+		if (this.rippleFunction) {
+			this.rippleFunction(this.date)
+		}
 	}
 	
 	buildGrid() {
@@ -189,27 +454,86 @@ class calendar {
 				} else {
 					cell.removeClass("greyButton")
 				}
-				if (y === i && x === j) {
+				if (this.mode == "single" && toSet.diff(this.date) == 0
+					|| this.mode == "multiple" && this.hasDate(toSet)) {
 					cell.addClass("buttonSelected")
 				} else {
 					cell.removeClass("buttonSelected")
 				}
 				cell.off()
-				cell.mousedown({date: toSet, parent: this}, function(evt) {
-					evt.data.parent.setDate(evt.data.date)
+				cell.mousedown({date: toSet, parent: this, x: j, y: i}, function(evt) {
+					if ($(this).prop("disabled")) return
+					if (evt.data.parent.mode == "multiple") {
+						if (evt.data.parent.hasDate(evt.data.date)) {
+							evt.data.parent.removeDate(evt.data.date)
+						} else {
+							evt.data.parent.addDate(evt.data.date)
+						}
+					} else {
+						evt.data.parent.setDate(evt.data.date)
+					}
+				})
+				cell.hover((evt) => {
+					if (this.mode == "single") return
+					if (evt.buttons == 1) {
+						if (this.hasDate(toSet)) {
+							this.removeDate(toSet)
+						} else {
+							this.addDate(toSet)
+						}
+					}
+				}, (evt) => {
 				})
 				cell.text(toSet.date())
+				if (this.filterFunction && this.filterFunction(x, y, toSet)) {
+					cell.addClass("disabledButton")
+					cell.prop("disabled", true)
+					cell.removeClass("historyButton")
+				} else {
+					cell.removeClass("disabledButton")
+					cell.prop("disabled", false)
+					if (this.filterFunction && toSet < this.date) {
+						cell.addClass("historyButton")
+					} else {
+						cell.removeClass("historyButton")
+					}
+				}
 			}
 		}
-		this.parent.find('.monthLabel').text(this.date.format("MMMM"))
+		this.parent.find('.monthLabel').text(this.displayDate.format("MMMM YYYY"))
 	}
 	
 	setDate(date) {
 		this.date = moment(date)
 		this.displayDate = moment(this.date)
+		this.parent.find(".dateStringInput").removeClass("is-invalid")
 		this.setNumbers()
 		//Change this for hosting
 		this.parent.find(".dateStringInput").val(this.date.format("MM/DD/YYYY"))
+		if (this.rippleFunction) {
+			this.rippleFunction(this.date)
+		}
+	}
+	
+	hasDate(date) {
+		let looking = date.valueOf()
+		for (var i in this.dates) {
+			if (this.dates[i] == looking) {
+				return true
+			}
+		}
+		return false
+	}
+	
+	addDate(date) {
+		this.dates.push(date.valueOf())
+		this.parent.find(".dateStringInput").val(date.format("MM/DD/YYYY"))
+		this.setNumbers()
+	}
+	
+	removeDate(date) {
+		this.dates = this.dates.filter(time => date.valueOf() != time)
+		this.setNumbers()
 	}
 	
 	getCell(x, y) {
@@ -220,6 +544,8 @@ class calendar {
 		if (mode == this.mode) {
 			return
 		}
+		this.mode = mode
+		this.setNumbers()
 	}
 }
 

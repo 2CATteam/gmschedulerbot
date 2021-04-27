@@ -98,14 +98,27 @@ function submit() {
 			}
 			chat = select.options[select.selectedIndex].value
 			var image = $("#image").data('path')
+			
+			let times = picker.getTimes()
+			if (times.length == 0) {
+				showError("You must select at least one date, and the last date for repeating messages must be after the first date")
+				return
+			}
+			
+			times.sort(function(a, b) {
+				return a - b;
+			})
+			
+			let first = times[0];
+			
 			var request = new XMLHttpRequest();
 			request.open("POST", "/submitMessage/");
 			request.setRequestHeader('Content-Type', 'application/json');
 			const toSend = JSON.stringify({
 				token: token,
 				chat: chat,
-				next: picker.getFirst(),
-				times: picker.getTimes(),
+				next: first,
+				times: times,
 				toSend: document.getElementById("toSend").value,
 				image: image,
 				messageType: messageType
@@ -170,7 +183,7 @@ function updateMessages() {
 	}
 	for (var x in messages) {
 		var subDiv = document.createElement("div");
-		subDiv.setAttribute("class", "subDiv");
+		subDiv.setAttribute("class", "subDiv py-3");
 		$(subDiv).data("job_id", messages[x].job_id)
 
 		var groupText = document.createElement("p");
@@ -201,6 +214,7 @@ function updateMessages() {
 		}
 		var cancelButton = document.createElement("button");
 		cancelButton.setAttribute("onclick", "deleteMessage(this)");
+		cancelButton.setAttribute("class", "btn btn-danger");
 		cancelButton.innerHTML = "Cancel message";
 
 		subDiv.appendChild(cancelButton);

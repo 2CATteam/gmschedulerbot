@@ -20,11 +20,11 @@
 }
 
 .disabledButton {
-	background-color: LightGray;
+	background-color: #EEE;
 }
 
 .buttonSelected {
-	background: #0075FF;
+	background: #0075FF !important;
 	color: white; 
 }
 
@@ -51,6 +51,21 @@
 	height: 100%;
 }
 
-.col-md.hidden {
+.col-md.hidden, option.hidden, .settingsColumn.hidden, .repeatSelect.hidden {
 	display: none !important;
+}
+
+.historyButton {
+	background-color: #DDFFDD;
+}
+
+.showHideRepeat {
+	width: 100%;
+	margin: 1rem 0 0 0 !important;
+	background-color: #EEE !important;
+	border-color: #EEE !important;
+}
+
+.animationFixer.showHideRepeat {
+	margin-top: 3rem !important;
 }

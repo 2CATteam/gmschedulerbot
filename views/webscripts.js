@@ -183,7 +183,6 @@ function updateMessages() {
 	for (var x in messages) {
 		var subDiv = document.createElement("div");
 		subDiv.setAttribute("class", "subDiv");
-		subDiv.setAttribute("class", "py-3");
 		$(subDiv).data("job_id", messages[x].job_id)
 
 		var groupText = document.createElement("p");
