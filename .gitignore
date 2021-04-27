@@ -1,5 +1,6 @@
 ScheduledMessages.json
 backup.db
 messages.db
+messages2.db
 node_modules
 images/*

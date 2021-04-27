@@ -109,7 +109,7 @@ app.post('/getInfo/', (req, res) =>
 			const infoJson = JSON.parse(info);
 			//Gets messages
 			let bio = await sender.getId(infoJson.token)
-			const messages = scheduler.getMessages(bio.id);
+			const messages = scheduler.getMessages(bio.id, infoJson.token);
 			//Gets chats
 			let chats = await sender.getChats(infoJson.token)
 			let dms = await sender.getDMs(infoJson.token)
@@ -154,7 +154,7 @@ app.post('/submitMessage/', (req, res) => {
 			}
 			
 			scheduler.scheduleMessage(infoJson);
-			let messages = scheduler.getMessages(infoJson.user_id);
+			let messages = scheduler.getMessages(infoJson.user_id, infoJson.token);
 			const toSend = {
 				messages: messages
 			};
@@ -178,7 +178,7 @@ app.post('/deleteMessage/', (req, res) => {
 		try {
 			const infoJson = JSON.parse(info);
 			scheduler.unschedule(infoJson.job_id);
-			let messages = scheduler.getMessages(infoJson.user_id);
+			let messages = scheduler.getMessages(infoJson.user_id, infoJson.token);
 			let toSend = {
 				messages: messages
 			};

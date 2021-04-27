@@ -3,7 +3,7 @@ var sqlite = require('sqlite3');
 const https = require('https');
 const path = require('path');
 
-var db = new sqlite.Database(path.join(__dirname, 'messages.db'), sqlite.OPEN_READWRITE, toss)
+var db = new sqlite.Database(path.join(__dirname, 'messages.db'), sqlite.OPEN_READ, toss)
 var backup = new sqlite.Database(path.join(__dirname, './backup.db'), sqlite.OPEN_READWRITE, toss)
 
 db.all('SELECT * FROM main', (err, rows) => {

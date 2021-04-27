@@ -239,7 +239,6 @@ function groupNameFromMessage(x) {
 		}
 		console.log(DMs)
 	}
-	console.log(x)
 	return "Unknown chat";
 }
 
