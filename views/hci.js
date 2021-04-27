@@ -564,8 +564,8 @@ class clock {
 				</div>
 			</div>
 		</div>`)
-		this.parent.find(".hoursClockWrapper").load("hoursPicker.svg", this.loadHours.bind(this))
-		this.parent.find(".minutesClockWrapper").load("minutesPicker.svg", this.loadMinutes.bind(this))
+		this.parent.find(".hoursClockWrapper").load("/hoursPicker.svg", this.loadHours.bind(this))
+		this.parent.find(".minutesClockWrapper").load("/minutesPicker.svg", this.loadMinutes.bind(this))
 		
 		this.ready = -1
 		this.hours = (new Date()).getHours()
