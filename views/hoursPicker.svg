@@ -51,7 +51,7 @@
  </g>
  <a href="javascript:void(0);">
   <g id="buttons" fill-opacity="0" stroke-width=".79375">
-   <circle cx="92.604" cy="20.373" r="13.229" opacity=".97"/>
+   <circle cx="92.604" cy="20.373" r="13.229" opacity=".97" style="user-select: none;" draggable="false"/>
    <circle cx="111.92" cy="39.688" r="13.229" opacity=".97"/>
    <circle cx="119.06" cy="66.146" r="13.229" opacity=".97"/>
    <circle cx="111.92" cy="92.604" r="13.229" opacity=".97"/>

@@ -558,9 +558,11 @@ class clock {
 			</div>
 		</div>
 		<div class="clocksWrapper p-1 my-3">
-			<div class="hoursClockWrapper">
-			</div>
-			<div class="minutesClockWrapper" style="display: none;">
+			<div class="clocksWrapper2">
+				<div class="hoursClockWrapper">
+				</div>
+				<div class="minutesClockWrapper" style="display: none;">
+				</div>
 			</div>
 		</div>`)
 		this.parent.find(".hoursClockWrapper").load("hoursPicker.svg", this.loadHours.bind(this))
@@ -706,14 +708,17 @@ class clock {
 		for (var i = 0; i < 12; i++) {
 			let button = this.parent.find(`.hoursClockWrapper #buttons :nth-child(${i+1})`)
 			button.hover(function(hour, evt) {
+				evt.preventDefault()
 				if (evt.buttons == 1) {
 					this.setHour(hour)
 				}
 			}.bind(this, i + 1))
 			button.mousedown(function(hour, evt) {
+				evt.preventDefault()
 				this.setHour(hour)
 			}.bind(this, i + 1))
-			button.mouseup(function() {
+			button.mouseup(function(evt) {
+				evt.preventDefault()
 				this.showMinutes()
 			}.bind(this))
 		}
@@ -738,6 +743,7 @@ class clock {
 }
 
 function mouseDrag(evt) {
+	evt.preventDefault()
 	if (evt.buttons == 1) {
 		let x = evt.pageX - evt.data.element.offset().left - (evt.data.ancestor.width() / 2)
 		let y = -evt.pageY + evt.data.element.offset().top + (evt.data.ancestor.height() / 2)

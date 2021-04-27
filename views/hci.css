@@ -39,7 +39,13 @@
 
 .clocksWrapper {
 	width: 100%;
-	aspect-ratio: 1 / 1;
+    padding-top: 100%;
+	position: relative;
+}
+
+.clocksWrapper2 {
+	width: 100%;
+    padding-top: 100%;
 	position: relative;
 }
 
