@@ -192,7 +192,7 @@ function updateMessages() {
 		$(subDiv).data("chat", messages[x].chat)
 		subDiv.appendChild(groupText);
 		
-		for (var i in messagex[x].times) {
+		for (var i in messages[x].times) {
 			var tempDate = new Date(messages[x].times[i]);
 			var timeText = document.createElement("p");
 			timeText.setAttribute("class", "timeText");
