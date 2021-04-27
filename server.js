@@ -143,10 +143,8 @@ app.post('/submitMessage/', (req, res) => {
 			const infoJson = JSON.parse(info);
 			console.log(infoJson);
 			let bio = await sender.getId(infoJson.token);
-			console.log(bio)
 			infoJson.job_id = (new Date()).getTime().toString() + bio.id
 			infoJson.user_id = bio.id
-			console.log(infoJson)
 			
 			if (!infoJson.next) {
 				infoJson.next = infoJson.time

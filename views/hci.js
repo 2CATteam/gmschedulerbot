@@ -12,6 +12,12 @@ class dateTimePicker {
 		this.parent.find(".dateStringInput").first().val(moment().format('L'))
 		this.firstCalendar = new calendar(this.parent.find(".calendarColumn"), true)
 		this.time = new clock(this.parent.find(".timeColumn"))
+		this.secondCalendar = new calendar(this.parent.find(".calendarColumn2"), true)
+		
+		this.setMode("single")
+		this.parent.find(".repeatTypeSelect").change({parent: this}, function(evt) {
+			evt.data.parent.setMode($(this).val())
+		})
 	}
 	
 	getTimes() {
@@ -25,10 +31,88 @@ class dateTimePicker {
 		toReturn.hours(this.time.hours)
 		return toReturn.valueOf()
 	}
+	
+	showMode() {
+		this.parent.find(".settingsColumn").children().addClass("hidden")
+		this.parent.find(`.${this.mode}Settings`).removeClass("hidden")
+		this.parent.find(`.${this.mode}Settings`).slideDown()
+		if (this.parent.find(".calendarColumn2:hidden").length > 0 && (this.mode === "interval" || this.mode === "days")) {
+			this.parent.find(".firstLabel").slideDown()
+			this.parent.find(`.calendarColumn2`).removeClass("hidden")
+			this.parent.find(".calendarColumn2").slideDown()
+		}
+	}
+	
+	setMode(mode) {
+		this.mode = mode
+		switch(mode) {
+			case "single":
+				if (this.parent.find(".calendarColumn2:visible").length > 0) {
+					this.parent.find(".firstLabel").slideUp()
+					this.parent.find(".calendarColumn2").slideUp(400, this.showMode.bind(this))
+				}
+				
+				if (this.parent.find(".intervalSettings:visible").length > 0) {
+					this.parent.find(".intervalSettings").slideUp(400, this.showMode.bind(this))
+				}
+				if (this.parent.find(".daysSettings:visible").length > 0) {
+					this.parent.find(".daysSettings").slideUp(400, this.showMode.bind(this))
+				}
+				if (this.parent.find(".multipleSettings:visible").length > 0) {
+					this.parent.find(".multipleSettings").slideUp(400, this.showMode.bind(this))
+				}
+				this.firstCalendar.setMode("single")
+				break
+			case "interval":
+				if (this.parent.find(".daysSettings:visible").length > 0) {
+					this.parent.find(".daysSettings").slideUp(400, this.showMode.bind(this))
+				}
+				if (this.parent.find(".multipleSettings:visible").length > 0) {
+					this.parent.find(".multipleSettings").slideUp(400, this.showMode.bind(this))
+				}
+				if (this.parent.find(".singleSettings:visible").length > 0) {
+					this.parent.find(".singleSettings").slideUp(400, this.showMode.bind(this))
+				}
+				
+				this.firstCalendar.setMode("single")
+				break
+			case "days":
+				if (this.parent.find(".intervalSettings:visible").length > 0) {
+					this.parent.find(".intervalSettings").slideUp(400, this.showMode.bind(this))
+				}
+				if (this.parent.find(".multipleSettings:visible").length > 0) {
+					this.parent.find(".multipleSettings").slideUp(400, this.showMode.bind(this))
+				}
+				if (this.parent.find(".singleSettings:visible").length > 0) {
+					this.parent.find(".singleSettings").slideUp(400, this.showMode.bind(this))
+				}
+				
+				this.firstCalendar.setMode("single")
+				break
+			case "multiple":
+				if (this.parent.find(".calendarColumn2:visible").length > 0) {
+					this.parent.find(".firstLabel").slideUp()
+					this.parent.find(".calendarColumn2").slideUp(400, this.showMode.bind(this))
+				}
+				
+				if (this.parent.find(".intervalSettings:visible").length > 0) {
+					this.parent.find(".intervalSettings").slideUp(400, this.showMode.bind(this))
+				}
+				if (this.parent.find(".daysSettings:visible").length > 0) {
+					this.parent.find(".daysSettings").slideUp(400, this.showMode.bind(this))
+				}
+				if (this.parent.find(".singleSettings:visible").length > 0) {
+					this.parent.find(".singleSettings").slideUp(400, this.showMode.bind(this))
+				}
+				
+				this.firstCalendar.setMode("multiple")
+				break
+		}
+	}
 }
 
 class calendar {
-	constructor(parent, includeString, date) {
+	constructor(parent, includeString, date, mode) {
 		this.parent = $(parent)
 		let html = `<div class="calendarMonth d-flex justify-content-between align-items-center">
 			<button class="monthLeft btn btn-light">&#60;</button>
@@ -43,18 +127,23 @@ class calendar {
 			<div class="firstCalendarContainer">` + html + `</div>`
 		}
 		this.parent.append(html)
-		this.date = date ? date : moment()
+		this.date = date ? moment(date) : moment()
 		this.date.milliseconds(0)
 		this.date.seconds(0)
 		this.date.minutes(0)
 		this.date.hours(0)
+		
+		this.displayDate = moment(this.date)
+		
+		this.mode = mode ? mode : "single"
+		
 		this.buildGrid(date)
 		this.parent.find(".monthLeft").click(function() {
-			this.date.subtract(1, "M")
+			this.displayDate.subtract(1, "M")
 			this.setNumbers()
 		}.bind(this))
 		this.parent.find(".monthRight").click(function() {
-			this.date.add(1, "M")
+			this.displayDate.add(1, "M")
 			this.setNumbers()
 		}.bind(this))
 		this.parent.find(".dateStringInput").val(this.date.format("MM/DD/YYYY"))
@@ -64,6 +153,11 @@ class calendar {
 				evt.data.setDate(date)
 			}
 		})
+	}
+	
+	setFilter(func) {
+		this.filterFunction = func
+		this.setNumbers()
 	}
 	
 	buildGrid() {
@@ -79,18 +173,18 @@ class calendar {
 	}
 	
 	setNumbers() {
-		let x = this.date.weekday()
-		let y = Math.ceil(this.date.date() / 7) - 1
-		if (x < (this.date.date() - 1) % 7) {
+		let x = this.displayDate.weekday()
+		let y = Math.ceil(this.displayDate.date() / 7) - 1
+		if (x < (this.displayDate.date() - 1) % 7) {
 			y += 1
 		}
 		let grid = this.parent.find(".calendarGrid")
 		for (var i = 0; i < 6; i++) {
 			for (var j = 0; j < 7; j++) {
-				let toSet = moment(this.date)
+				let toSet = moment(this.displayDate)
 				let cell = this.getCell(j, i)
 				toSet.add((i - y) * 7 + (j - x), 'd')
-				if (toSet.month() != this.date.month()) {
+				if (toSet.month() != this.displayDate.month()) {
 					cell.addClass("greyButton")
 				} else {
 					cell.removeClass("greyButton")
@@ -101,7 +195,7 @@ class calendar {
 					cell.removeClass("buttonSelected")
 				}
 				cell.off()
-				cell.click({date: toSet, parent: this}, function(evt) {
+				cell.mousedown({date: toSet, parent: this}, function(evt) {
 					evt.data.parent.setDate(evt.data.date)
 				})
 				cell.text(toSet.date())
@@ -112,6 +206,7 @@ class calendar {
 	
 	setDate(date) {
 		this.date = moment(date)
+		this.displayDate = moment(this.date)
 		this.setNumbers()
 		//Change this for hosting
 		this.parent.find(".dateStringInput").val(this.date.format("MM/DD/YYYY"))
@@ -119,6 +214,12 @@ class calendar {
 	
 	getCell(x, y) {
 		return this.parent.find(`.calendarGrid :nth-child(${y+1}) :nth-child(${x+1})`)
+	}
+	
+	setMode(mode) {
+		if (mode == this.mode) {
+			return
+		}
 	}
 }
 
@@ -226,7 +327,10 @@ class clock {
 			} else {
 				this.setHour(this.hours)
 			}
-			this.parent.find(".amPmButton").text(this.pm ? "PM" : "AM")
+			this.parent.find(".hoursButton").removeClass("buttonSelected")
+			this.parent.find(".minutesButton").removeClass("buttonSelected")
+			this.parent.find(".amPmButton").addClass("buttonSelected")
+			this.showTime()
 		}.bind(this))
 	}
 	
@@ -237,6 +341,7 @@ class clock {
 		mask.attr("transform", `rotate(${this.minutes * 6} 66.146 66.146)`) 
 		this.parent.find(".hoursButton").text((this.hours % 12 == 0 ? 12 : this.hours % 12).toString().padStart(2, "0"))
 		this.parent.find(".minutesButton").text(this.minutes.toString().padStart(2, "0"))
+		this.parent.find(".amPmButton").text(this.pm ? "PM" : "AM")
 	}
 	
 	showHours() {
@@ -282,6 +387,9 @@ class clock {
 			button.mousedown(function(hour, evt) {
 				this.setHour(hour)
 			}.bind(this, i + 1))
+			button.mouseup(function() {
+				this.showMinutes()
+			}.bind(this))
 		}
 		this.ready++
 		if (this.ready == 1) {

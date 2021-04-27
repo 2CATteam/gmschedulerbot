@@ -1,9 +1,80 @@
 <div class="dateSelectorWrapper p-4">
 	<link rel="stylesheet" type="text/css" href="hci.css">
-	<div class="firstDateTimeContainer row">
-		<div class="calendarColumn col-sm container-md">
+	<p class="firstLabel text-center" style="display: none;">First Message:</p>
+	<div class="firstDateTimeContainer row gy-5">
+		<div class="calendarColumn col-md container-md">
 		</div>
-		<div class="timeColumn col-sm container-md d-flex flex-column">
+		<div class="timeColumn col-md container-md d-flex flex-column">
 		</div>
 	</div>
+	<label class="text-center my-3" style="width: 100%;">Repeat Mode:<br/>
+		<select class="repeatTypeSelect form-control">
+			<option value="single" selected>Single</option>
+			<option value="interval">Interval</option>
+			<option value="days">Weekday</option>
+			<option value="multiple">Multiple Dates</option>
+		</select>
+	</label>
+	<div class="settingsColumn row">
+		<div class="singleSettings col-md">
+			<p class="text-center">No additional options</p>
+		</div>
+		<div class="intervalSettings d-flex flex-column col-md hidden">
+			<p class="text-center">Repeat every:</p>
+			<div class="row">
+				<input type="number" class="form-control me-1 col-sm" style="width: 0;">
+				<select class="form-control form-inline col-sm">
+					<option value="days" selected>Days</option>
+					<option value="weeks">Weeks</option>
+					<option value="months">Month</option>
+				</select>
+			</div>
+		</div>
+		<div class="daysSettings col-md d-flex flex-column hidden">
+			<p class="text-center my-0">Send on:</p>
+			<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" value="sunday">
+				Sunday
+			</label>
+			<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" value="monday">
+				Monday
+			</label>
+			<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" value="tuesday">
+				Tuesday
+			</label>
+			<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" value="wednesday">
+				Wednesday
+			</label>
+			<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" value="thursday">
+				Thursday
+			</label>
+			</label>
+			<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" value="friday">
+				Friday
+			</label>
+			<label class="form-check-label">
+				<input class="form-check-input" type="checkbox" value="saturday">
+				Saturday
+			</label>
+			<br/>
+			<p class="text-center my-0">Filter by week:</p>
+			<select class="form-control">
+				<option value="all" selected>Every week</option>
+				<option value="alternating">Every other week</option>
+				<option value="nth"><p class="weekNumber">N</p>th week of each month</option>
+				<option value="last" style="display: none !important;">Last week of each month</option>
+			</select>
+		</div>
+		<div class="multipleSettings col-md d-flex flex-column hidden" style="display: none !important;">
+			<p>Select multiple days on the calendar above</p>
+		</div>
+		<div class="calendarColumn2 col-md container-md hidden">
+			<p class="text-center">Last message:</p>
+		</div>
+	</div>	
 </div>

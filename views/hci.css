@@ -1,5 +1,6 @@
-.calendarColumn {
-	max-width: 320px;
+.calendarColumn, .calendarColumn2, .timeColumn {
+	max-width: 280px;
+	min-width: 230px;
 }
 
 .equalWidth {
@@ -29,7 +30,7 @@
 
 .dateSelectorWrapper {
 	display: inline-block;
-	border: 2px solid black;
+	border: 2px solid LightGray;
 }
 
 .hoursButton, .minuteButton, .amPmButton {
@@ -48,4 +49,8 @@
 	top: 0;
 	width: 100%;
 	height: 100%;
+}
+
+.col-md.hidden {
+	display: none !important;
 }
