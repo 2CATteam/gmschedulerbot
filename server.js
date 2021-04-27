@@ -76,6 +76,13 @@ app.get('/summary/authenticate/?', (req, res) =>
 });
 
 //Authentication just adds a cookie and then redirects
+app.get('/hci/authenticate/?', (req, res) =>
+{
+	res.cookie('token', req.query.access_token, {maxAge: 604800000});
+	res.redirect("/hci/");
+});
+
+//Authentication just adds a cookie and then redirects
 app.get('/vibecheck/authenticate/?', (req, res) =>
 {
 	res.cookie('token', req.query.access_token, {maxAge: 604800000});
