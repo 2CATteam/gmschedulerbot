@@ -1,11 +1,7 @@
 class dateTimePicker {
-	constructor(parent, vertical) {
+	constructor(parent) {
 		this.parent = $(parent)
-		if (vertical) {
-			$(parent).load("hci_mobile.html")
-		} else {
-			$(parent).load("hci.html", this.load.bind(this))
-		}
+		$(parent).load("hci.html", this.load.bind(this))
 	}
 	
 	load() {
