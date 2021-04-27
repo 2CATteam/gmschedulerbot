@@ -410,6 +410,16 @@ class calendar {
 				$(this).addClass("is-invalid")
 			}
 		})
+		this.parent.on("mousewheel", (evt) => {
+			evt.preventDefault()
+			if (evt.originalEvent.wheelDelta > 0) {
+				this.displayDate.subtract(1, "M")
+				this.setNumbers()
+			} else {
+				this.displayDate.add(1, "M")
+				this.setNumbers()
+			}
+		})
 	}
 	
 	setFilter(func) {
@@ -616,6 +626,8 @@ class clock {
 				case 8:
 				case 9:
 					evt.data.parent.setHour(parseInt(evt.key))
+					evt.data.parent.parent.find(".minutesButton").click()
+					evt.data.parent.parent.find(".minutesButton").focus()
 					break
 			}
 		})
@@ -627,9 +639,31 @@ class clock {
 				if (currentBuffer > 9) evt.data.parent.minutesBuffer = ""
 				evt.data.parent.minutesBuffer += input
 				evt.data.parent.setMinutes(parseInt(evt.data.parent.minutesBuffer))
+			} else {
+				if (evt.key == "a" || evt.key == "A") {
+					evt.data.parent.parent.find(".hoursButton").removeClass("buttonSelected")
+					evt.data.parent.parent.find(".minutesButton").removeClass("buttonSelected")
+					evt.data.parent.parent.find(".amPmButton").addClass("buttonSelected")
+					evt.data.parent.parent.find(".amPmButton").focus()
+					
+					evt.data.parent.pm = false
+					evt.data.parent.setHour(evt.data.parent.hours)
+					
+					evt.data.parent.showTime()
+				} else if (evt.key == "p" || evt.key == "P") {
+					evt.data.parent.parent.find(".hoursButton").removeClass("buttonSelected")
+					evt.data.parent.parent.find(".minutesButton").removeClass("buttonSelected")
+					evt.data.parent.parent.find(".amPmButton").addClass("buttonSelected")
+					evt.data.parent.parent.find(".amPmButton").focus()
+					
+					evt.data.parent.pm = true
+					evt.data.parent.setHour(evt.data.parent.hours + 12)
+					
+					evt.data.parent.showTime()
+				}
 			}
 		})
-		this.parent.find(".amPmButton").keypress({parent: this}, function(evt) {
+		this.parent.find(".amPmButton").keypress((evt) => {
 			if (evt.key == "a" || evt.key == "A") {
 				this.pm = false
 				this.setHour(this.hours)
