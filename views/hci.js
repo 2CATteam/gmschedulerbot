@@ -820,8 +820,8 @@ class clock {
 function mouseDrag(evt) {
 	evt.preventDefault()
 	if (evt.buttons == 1) {
-		let x = evt.pageX - evt.data.element.offset().left - (evt.data.ancestor.width() / 2)
-		let y = -evt.pageY + evt.data.element.offset().top + (evt.data.ancestor.height() / 2)
+		let x = evt.pageX - (evt.data.element[1].getBoundingClientRect().left + evt.data.element[1].ownerDocument.defaultView.pageXOffset) - (evt.data.ancestor.width() / 2)
+		let y = -evt.pageY + (evt.data.element[1].getBoundingClientRect().top + evt.data.element[1].ownerDocument.defaultView.pageYOffset) + (evt.data.ancestor.height() / 2)
 		let angle = Math.round((Math.atan2(x, y) * 180 / Math.PI + 360) / 6) % 60
 		evt.data.parent.setMinutes(angle)
 	}
