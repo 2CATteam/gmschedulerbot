@@ -296,9 +296,7 @@ function showError(toShow) {
 function showSuccess() {
 	document.getElementById("ErrorLocation").innerHTML = "";
 	document.getElementById("SuccessLocation").innerHTML = "Success! Your message has been scheduled and you can view or cancel it below.";
-	if ($('#shouldClear:checked').length > 0) {
-		document.getElementById("toSend").value = "";
-	}
+	document.getElementById("toSend").value = "";
 }
 
 function debug() {
