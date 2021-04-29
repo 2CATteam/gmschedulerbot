@@ -343,7 +343,7 @@ class dateTimePicker {
 				this.firstCalendar.setRipple(function(date) {
 					this.parent.find(".daysSettings label input").prop("disabled", false)
 					let checkbox = this.parent.find(`.daysSettings :nth-child(${date.day() + 2}) input`)
-					checkbox.prop("disabled", true)
+					//checkbox.prop("disabled", true)
 					checkbox.prop("checked", true)
 					checkbox.change()
 					
