@@ -61,7 +61,7 @@
 	height: 100%;
 }
 
-.col-md.hidden, option.hidden, .settingsColumn.hidden, .repeatSelect.hidden {
+.col-md.hidden, option.hidden, .settingsColumn.hidden, .repeatSelect.hidden, p.hidden {
 	display: none !important;
 }
 
@@ -78,4 +78,8 @@
 
 .animationFixer.showHideRepeat {
 	margin-top: 3rem !important;
+}
+
+p.bottomLabel {
+	margin-bottom: 0;
 }

@@ -191,9 +191,21 @@ class dateTimePicker {
 	}
 	
 	showMode() {
-		this.parent.find(".settingsColumn").children().addClass("hidden")
+		let addBack = this.parent.find(".timeColumn").detach()
+		this.parent.find(".singleSettings").addClass("hidden")
+		this.parent.find(".intervalSettings").addClass("hidden")
+		this.parent.find(".daysSettings").addClass("hidden")
+		this.parent.find(".multipleSettings").addClass("hidden")
 		this.parent.find(`.${this.mode}Settings`).removeClass("hidden")
 		this.parent.find(`.${this.mode}Settings`).slideDown()
+		if (this.mode === "interval" || this.mode === "days") {
+			this.parent.find(".settingsColumn").append(addBack)
+			this.parent.find(".clockLabel").removeClass("hidden")
+		} else {
+			this.parent.find(".firstDateTimeContainer").append(addBack)
+			this.parent.find(".clockLabel").addClass("hidden")
+		}
+		addBack.slideDown()
 		if (this.parent.find(".calendarColumn2:hidden").length > 0 && (this.mode === "interval" || this.mode === "days")) {
 			this.parent.find(".firstLabel").slideDown()
 			this.parent.find(`.calendarColumn2`).removeClass("hidden")
@@ -204,12 +216,17 @@ class dateTimePicker {
 	}
 	
 	setMode(mode) {
+		let oldMode = this.mode
 		this.mode = mode
 		switch(mode) {
 			case "single":
 				if (this.parent.find(".calendarColumn2:visible").length > 0) {
 					this.parent.find(".firstLabel").slideUp()
 					this.parent.find(".calendarColumn2").slideUp(400, this.showMode.bind(this))
+				}
+				
+				if (oldMode == "interval" || oldMode == "days") {
+					this.parent.find(".timeColumn").slideUp(400)
 				}
 				
 				if (this.parent.find(".intervalSettings:visible").length > 0) {
@@ -234,6 +251,10 @@ class dateTimePicker {
 				}
 				if (this.parent.find(".singleSettings:visible").length > 0) {
 					this.parent.find(".singleSettings").slideUp(400, this.showMode.bind(this))
+				}
+				
+				if (oldMode == "single" || oldMode == "multiple") {
+					this.parent.find(".timeColumn").slideUp(400)
 				}
 				
 				this.firstCalendar.setMode("single")
@@ -278,6 +299,10 @@ class dateTimePicker {
 				}
 				if (this.parent.find(".singleSettings:visible").length > 0) {
 					this.parent.find(".singleSettings").slideUp(400, this.showMode.bind(this))
+				}
+				
+				if (oldMode == "single" || oldMode == "multiple") {
+					this.parent.find(".timeColumn").slideUp(400)
 				}
 				
 				this.firstCalendar.setMode("single")
@@ -395,6 +420,10 @@ class dateTimePicker {
 					this.parent.find(".singleSettings").slideUp(400, this.showMode.bind(this))
 				}
 				
+				if (oldMode == "interval" || oldMode == "days") {
+					this.parent.find(".timeColumn").slideUp(400)
+				}
+				
 				this.firstCalendar.setMode("multiple")
 				this.secondCalendar.setFilter(null)
 				this.firstCalendar.setRipple(null)
@@ -451,6 +480,7 @@ class calendar {
 				$(this).addClass("is-invalid")
 			}
 		})
+		/*
 		this.parent.on("mousewheel", (evt) => {
 			evt.preventDefault()
 			if (evt.originalEvent.wheelDelta > 0) {
@@ -460,7 +490,7 @@ class calendar {
 				this.displayDate.add(1, "M")
 				this.setNumbers()
 			}
-		})
+		})*/
 	}
 	
 	setFilter(func) {
