@@ -1,3 +1,5 @@
+//Most of this code is the existing codebase for my website. Don't grade this, it's not the project.
+
 var chats = []
 var DMs = []
 var messages = []

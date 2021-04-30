@@ -1,5 +1,7 @@
 'use strict';
 
+//Most of this code is the existing codebase for my website. Don't grade this, it's not the project.
+
 const express = require('express')
 const app = express()
 const path = require('path')
