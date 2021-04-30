@@ -1,4 +1,5 @@
 //Most of this code is the existing codebase for my website. Don't grade this, it's not the project.
+//Same for experimentView.html and experimentStyles.css, though the former does have some sick Bootstrap action we added in this project.
 
 var chats = []
 var DMs = []

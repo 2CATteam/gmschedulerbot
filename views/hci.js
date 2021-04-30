@@ -230,10 +230,15 @@ class dateTimePicker {
 					return a - b
 				})
 			case "multiple":
-				//Calendar takes care of this one for us, just sort it
-				return this.firstCalendar.dates.sort(function(a, b) {
+				//Calendar takes care of this one for us, just sort them and set times
+				let dates = this.firstCalendar.dates.sort(function(a, b) {
 					return a - b
 				})
+				//Set times
+				for (var i in dates) {
+					dates[i] = moment(dates[i]).minutes(this.time.minutes).hours(this.time.hours).valueOf()
+				}
+				return dates
 		}
 	}
 	
