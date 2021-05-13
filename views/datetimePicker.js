@@ -3,7 +3,7 @@ class dateTimePicker {
 	//Stores element to attach itself to, and loads the HTML file containing its layout
 	constructor(parent) {
 		this.parent = $(parent)
-		$(parent).load("/hci.html", this.load.bind(this))
+		$(parent).load("/datetimePicker.html", this.load.bind(this))
 	}
 	
 	//On load, begins manipulating elements

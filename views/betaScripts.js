@@ -147,7 +147,7 @@ function completeCheck(callback)
 	if (document.getElementById("Select").value=="Invalid")
 	{showError("Authentication is required. If you have logged in with GroupMe, make sure you have cookies enabled.")}
 	else if (document.getElementById("toSend").value=="" && !$("#image").data('path'))
-	{showError("Text is required")}
+	{showError("Text or image is required")}
 	else { callback() }
 }
 
@@ -159,7 +159,7 @@ function validCheck(callback) {
 	if (picker.getFirst() < new Date())
 		{showError("Message cannot be scheduled for the past.\n" + picker.getFirst().toLocaleString())}
 	else if (document.getElementById("toSend").value.length > 1000)
-		{showError("Maximum length is 1000 characters.")}
+		{showError("Maximum message length is 1000 characters.")}
 	else {callback()}
 }
 
@@ -194,9 +194,11 @@ function updateMessages() {
 		let element = `<div class="card container-fluid subDiv py-3 mt-4">
 			<div class="py-3 row gy-4">
 				<div class="col-md">
-					<p><strong>Chat: </strong><br/>${groupNameFromMessage(x)}</p>
-					<p style="white-space: pre-wrap; {messages[x].toSend ? "" : "display: none;"}"><strong>Message:</strong><br/>${messages[x].toSend}</p>
-					${messages[x].image ? '<p><strong>Image: </strong></p><img src="' + messages[x].image + '" alt="' + messages[x].image + '">' : ""}
+					<p class="text-center"><b>Chat: </b></p>
+					<p>${groupNameFromMessage(x)}</p>
+					<p class="text-center" ${messages[x].toSend ? "" : 'style="display: none;"'}><strong>Message:</strong></p>
+					<p style="white-space: pre-wrap; ${messages[x].toSend ? "" : "display: none;"}">${messages[x].toSend}</p>
+					${messages[x].image ? '<p class="text-center"><strong>Image: </strong></p><img src="' + messages[x].image + '" alt="' + messages[x].image + '">' : ""}
 				</div>
 				<div class="col-md">
 					<p class="text-left text-md-center"><strong>Date(s):</strong></p>

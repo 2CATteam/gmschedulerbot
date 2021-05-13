@@ -29,16 +29,16 @@ app.get('/', (req, res) =>
 	res.sendFile(path.join(__dirname + '/views/baseView.html'))
 });
 
-//Experimental website just gives normal screen but with hci stuff
+//HCI redirects to beta, because I made the mistake of naming the beta page HCI at first
 app.get('/hci', (req, res) =>
 {
-	res.sendFile(path.join(__dirname + '/views/experimentView.html'))
+	res.redirect("/beta");
 });
 
-//Text website just gives normal screen but with test
-app.get('/test', (req, res) =>
+//Beta website gives new beta page!
+app.get('/beta', (req, res) =>
 {
-	res.sendFile(path.join(__dirname + '/views/experimentView.html'))
+	res.sendFile(path.join(__dirname + '/views/betaView.html'))
 });
 
 //Fallback website just gives fallback screen
