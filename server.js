@@ -97,12 +97,6 @@ app.get('/faq/', (req, res) =>
 	res.sendFile(path.join(__dirname + '/views/faqView.html'))
 });
 
-//loss view
-app.get('/loss/', (req, res) =>
-{
-	res.sendFile(path.join(__dirname + '/views/lossView.html'))
-});
-
 //Gets the chats from GroupMe
 app.post('/getInfo/', (req, res) =>
 {

@@ -35,21 +35,13 @@
 <a href="https://github.com/2CATteam/gmschedulerbot">If you want to see the source code, check it out here!</a>
 <br/>
 
-<h3>Can I cancel a message?</h3>
-<p>Yep! If you have any scheduled messages, they should appear under the form to make one, as well as a button for each to cancel. If you don't see a message there, it's probably not going to be sent, but if it's something of major importance, feel free to contact me and I can check! My email address is below.</p>
-<br/>
-
 <h3>Is there any limit to how many I can schedule?</h3>
 <p>Nope! That said, if you schedule 1000 messages at once, I can't guarantee all of them will send. It's not magic, after all, and the server may get overwhelmed.</p>
 <br/>
 
 <h3>Is there a limit to how far in advance I can schedule a message?</h3>
-<p>Well... No, but don't count on anything scheduled for more than a year out to be dependable. This service is just a hobby of mine, and I'm probably not going to keep it up forever.</p>
+<p>Well... No, but don't count on anything scheduled for more than a year out to be dependable. This service is just a hobby of mine, and I'm probably not going to keep it up forever. Rest assured, though, that if it is ever shut down, I'll send out a notice in advance.</p>
 <br/>
-
-<h3>My messages disappeared. What happened?</h3>
-<p>Many things can cause this to happen If your message was scheduled before May 29, 2020, it may have been lost due to a data loss Schmessage suffered on that day.</p>
-<p>In addition, if your GroupMe password has changed, you'll need to re-schedule all your messages, due to the way GroupMe handles expired tokens.</p>
 
 <h3>Why don't I see a chat/person available in the list?</h3>
 <p>Due to GroupMe API limitations (i.e. something I can't change), only 100 groups/DMs can be shown, which are displayed in order of which chat has the most recent messages.</p>
@@ -70,17 +62,24 @@ One platform I know I can't expand to is Discord. Due to the developer agreement
 
 <h3>Why do the date and time pickers look different in different browsers? Why is it so strange to input on Mac?</h3>
 <p>The site uses date and time input from HTML5. What that means is that I tell your browser (Chrome, Firefox, Safari, IE) to put a date and time picker there, and it's up to the browser to actually put it there. Different browsers make it look different. In the case of Safari on a Mac, it decides to make it look like a basic text box asking for a specific format. Unfortunately, this is on Apple's end, not mine, so I can't make it easier to use.</p>
+<p>UPDATE: This should now be fixed! Check out <a href="/beta">the new beta page!</a></p>
 <br/>
 
 <h3>What data do you collect, and how do you use it? Do you sell user data?</h3>
 <p>First off, Schmessage never sees your GroupMe username or password, as the site uses GroupMe's OAuth tool, which provides Schmessage with the ability to see what groups you're in and send messages when told to, while leaving security to GroupMe.<br/><br/>
 Other than your token, the site only collects the form data you explicitly provide - the chat or DM you want to send a message to, the date and time your message should be sent, the text you're sending, and any image you're sending.<br/><br/>
-All of this data, including your token, is stored until the message is sent, and then it is immediately deleted. We do not keep it for logs, and we do not sell any data.<br/><br/>
+All of this data, including your token, is stored until the message is sent, and then it is immediately deleted. We do not keep it, and we do not sell any data.<br/><br/>
 As a result, if you want to exercise your right to be forgotten, doing so is as simple as canceling any messages that have not yet sent. For any previously sent messages, the data is already gone from our servers.</p>
 <br/>
 
 <h3>If you don't sell user data, and you don't have ads, how do you make money?</h3>
 <p>I actually don't! I made this for fun, and I keep it going because it's relatively cheap, fun, and cool to show to people when they ask what I do. Maybe someday it'll be shut down, but until then, I'm keeping it running at my own expense.</p>
+<br/>
+
+<h3>What's up with the new Beta interface?</h3>
+<p>I've been wanting to redesign this page since I made it, but I didn't have the design intuition or the technical skills to do so. Now, while my design sense is still a bit iffy, my technical skills are much better! So, I redesigned the interface as part of a class project, with design help from my teammates.<br/><br/>
+I think it's much, much better! Plus, it allows me to support a feature I've always wanted to allow: Recurring messages. This is something I've always wanted to implement, and I finally have an interface which supports it!<br/><br/>
+Currently, as the name says, the interface is still in beta. I want to get as much feedback as possible before I make the redesign the default for everyone, and I'd like to add a few features (Namely, editing message groups after scheduling them). And, even once the new interface is the default, I intend to keep the legacy UI available indefinitely.</p>
 <br/>
 
 <h3>I have a problem/question/suggestion! How can I contact you?</h3>
