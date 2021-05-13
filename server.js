@@ -81,7 +81,7 @@ app.get('/summary/authenticate/?', (req, res) =>
 app.get('/hci/authenticate/?', (req, res) =>
 {
 	res.cookie('token', req.query.access_token, {maxAge: 604800000});
-	res.redirect("/hci/");
+	res.redirect("/beta/");
 });
 
 //Authentication just adds a cookie and then redirects
