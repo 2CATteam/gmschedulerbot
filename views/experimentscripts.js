@@ -115,7 +115,7 @@ function submit() {
 			let first = times[0];
 			
 			if (first < (new Date()).getTime()) {
-				showError("Message cannot be scheduled for the past.")
+				showError("Message cannot be scheduled for the past.\n" + first.toLocaleString())
 				return
 			}
 			
@@ -157,7 +157,7 @@ function validCheck(callback) {
 		return;
 	}
 	if (picker.getFirst() < new Date())
-		{showError("Message cannot be scheduled for the past.")}
+		{showError("Message cannot be scheduled for the past.\n" + picker.getFirst().toLocaleString())}
 	else if (document.getElementById("toSend").value.length > 1000)
 		{showError("Maximum length is 1000 characters.")}
 	else {callback()}
@@ -165,7 +165,7 @@ function validCheck(callback) {
 
 function deleteMessage(button) {
 	var token = getCookie("token")
-	var parent = $(button.parentElement);
+	var parent = $(button).closest(".subDiv");
 
 	var request = new XMLHttpRequest();
 	request.open("POST", "/deleteMessage/");
@@ -190,46 +190,47 @@ function updateMessages() {
 		return
 	}
 	for (var x in messages) {
-		var subDiv = document.createElement("div");
-		subDiv.setAttribute("class", "subDiv py-3");
-		$(subDiv).data("job_id", messages[x].job_id)
-
-		var groupText = document.createElement("p");
-		groupText.setAttribute("class", "groupText");
-		groupText.innerHTML = "<b>Chat: </b>" + groupNameFromMessage(x);
-		$(subDiv).data("chat", messages[x].chat)
-		subDiv.appendChild(groupText);
+		let tempDate = new Date(messages[x].next)
+		let element = `<div class="card container-fluid subDiv py-3 mt-4">
+			<div class="py-3 row gy-4">
+				<div class="col-md">
+					<p><strong>Chat: </strong><br/>${groupNameFromMessage(x)}</p>
+					<p style="white-space: pre-wrap; {messages[x].toSend ? "" : "display: none;"}"><strong>Message:</strong><br/>${messages[x].toSend}</p>
+					${messages[x].image ? '<p><strong>Image: </strong></p><img src="' + messages[x].image + '" alt="' + messages[x].image + '">' : ""}
+				</div>
+				<div class="col-md">
+					<p class="text-left text-md-center"><strong>Date(s):</strong></p>
+					<div class="calendarContainer container-md">
+						<div class="calendarDisplay my-3"></div>
+					</div>
+					<p class="text-left text-md-center"><strong>Time: </strong><br/>${tempDate.toLocaleTimeString()}</p>
+				</div>
+			</div>
+			<div class="row justify-content-around g-3 gx-5">
+				<!--<div class="buttonContainer col-sm">
+					<button class="btn btn-primary w-100" onclick="editMessage(this)">Edit Message</button>
+				</div>-->
+				<div class="buttonContainer col-sm">
+					<button class="btn btn-danger" onclick="deleteMessage(this)">Cancel Message</button>
+				</div>
+			</row>
+		</div>`
 		
-		for (var i in messages[x].times) {
-			var tempDate = new Date(messages[x].times[i]);
-			var timeText = document.createElement("p");
-			timeText.setAttribute("class", "timeText");
-			timeText.innerHTML = "<b>Time: </b>" + tempDate.toLocaleString();
-			$(subDiv).data("time", tempDate);
-			subDiv.appendChild(timeText);
+		let dom = $(element)
+		let dateDisplay = new calendar(dom.find(".calendarDisplay"), false, messages[x].next, "multiple", false)
+		for (let y of messages[x].times) {
+			let toAdd = moment(y)
+			toAdd.milliseconds(0)
+			toAdd.seconds(0)
+			toAdd.minutes(0)
+			toAdd.hours(0)
+			dateDisplay.addDate(toAdd)
 		}
-
-		var textText = document.createElement("p");
-		textText.setAttribute("class", "textText");
-		textText.innerHTML = "<b>Message: </b>" + messages[x].toSend;
-		$(subDiv).data("text", messages[x].toSend);
-		subDiv.appendChild(textText);
-
-		if (messages[x].image) {
-			var imageText = document.createElement("p");
-			imageText.setAttribute("class", "textText");
-			imageText.innerHTML = "<b>Image URL: </b>" + messages[x].image
-			$(subDiv).data("image", messages[x].image)
-			subDiv.appendChild(imageText)
+		for (let y in messages[x]) {
+			dom.data(y, messages[x][y])
 		}
-		var cancelButton = document.createElement("button");
-		cancelButton.setAttribute("onclick", "deleteMessage(this)");
-		cancelButton.setAttribute("class", "btn btn-danger");
-		cancelButton.innerHTML = "Cancel message";
-
-		subDiv.appendChild(cancelButton);
-
-		document.getElementById("scheduled").appendChild(subDiv);
+		dom.data("info", messages[x])
+		$("#scheduled").append(dom)
 
 		document.getElementById("messagesLabel").hidden = false;
 	}
@@ -246,49 +247,13 @@ function groupNameFromMessage(x) {
 	} else {
 		for (var i = 0; i < DMs.length; i++) {
 			if (DMs[i][0] == messages[x].chat) {
-				return DMs[i][1] + "'s DMs"
+				return "DM to " + DMs[i][1]
 			}
 		}
 		console.log(DMs)
 	}
 	console.log(x)
 	return "Unknown chat";
-}
-
-function groupIdFromName(name) {
-	var groupID = 0
-	const options = document.getElementById("Select").children
-	for (var choice = 0; choice < options.length; ++choice) {
-		if (options[choice].innerText == name) {
-			groupID = options[choice].value;
-		}
-	}
-	const dmoptions = document.getElementById("dmSelect").children
-	for (var choice = 0; choice < dmoptions.length; ++choice) {
-		if (dmoptions[choice].innerText + "'s DMs" == name) {
-			groupID = dmoptions[choice].value;
-		}
-	}
-	return groupID
-}
-
-function dateFromStrings(date, time) {
-	if (!date.match(/\d{4}-\d{1,2}-\d{1,2}/i)) { return }
-	if (!time.match(/\d{1,2}:\d{1,2}/i)) { return }
-	let dateSplit = date.split("-");
-	let timeSplit = time.split(":");
-	let ints = [
-		parseInt(dateSplit[0]),
-		parseInt(dateSplit[1]),
-		parseInt(dateSplit[2]),
-		parseInt(timeSplit[0]),
-		parseInt(timeSplit[1])
-	];
-	if (timeSplit.length > 2) {
-		ints.push(parseInt(timeSplit[2]))
-	}
-	var toReturn = new Date(ints[0], ints[1]-1, ints[2], ints[3], ints[4], ints[5] ? ints[5] : null);
-	return toReturn;
 }
 
 function showError(toShow) {
@@ -300,35 +265,6 @@ function showSuccess() {
 	document.getElementById("ErrorLocation").innerHTML = "";
 	document.getElementById("SuccessLocation").innerHTML = "Success! Your message has been scheduled and you can view or cancel it below.";
 	document.getElementById("toSend").value = "";
-}
-
-function debug() {
-	var debugString = "";
-	debugString += document.cookie;
-	debugString += "\n \n";
-	if (document.getElementById("date").value && document.getElementById("time").value)
-	{
-		debugString += document.getElementById("date").value;
-		debugString += "\n";
-		debugString += document.getElementById("time").value;
-		debugString += "\n";
-		debugString += "Date currently: ";
-		let toCompareDate = new Date();
-		debugString += toCompareDate.toISOString();
-		debugString += "\n Form of existing is as follows: ";
-		let debugDate = dateFromStrings(document.getElementById("date").value, document.getElementById("time").value);
-		debugString += debugDate.toISOString();
-		debugString += "\n";
-		debugString += "Compare current, ";
-		debugString += toCompareDate.getTime();
-		debugString += "To parsed value from fields, ";
-		debugString += debugDate.getTime();
-	}
-	debugString += "\n \n";
-	debugString += document.getElementById("Select").innerHTML;
-	debugString += "\n \n";
-	debugString += document.getElementById("toSend").value;
-	document.getElementById("ErrorLocation").innerHTML = debugString;
 }
 
 function imageUpload(event) {

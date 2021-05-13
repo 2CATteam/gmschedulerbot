@@ -25,11 +25,6 @@ h1 {
 	text-align: center;
 }
 
-a {
-	font-weight: bold;
-	text-align: center;
-}
-
 body {
 	background-color: DeepSkyBlue;
 }
@@ -132,12 +127,8 @@ table {
 }
 
 .subDiv {
-	border-style: solid;
-	border-width: 1px;
 	border-radius: 10px;
 	padding: 0 5% 1.25em 5%;
-	margin: 0 0 1.25em 0;
-	overflow: auto;
 }
 
 .DateTimeDiv {
@@ -150,8 +141,8 @@ table {
 }
 
 .SortByText {
-        line-height: 0;
-        width: 140px;
+	line-height: 0;
+	width: 140px;
 }
 
 #Nicknames {
@@ -175,4 +166,20 @@ table {
 	display: flex;
 	justify-content: center;
 	align-items: center
+}
+
+.calendarContainer {
+	min-width: 230px;
+	max-width: 280px;
+	padding-right: calc(var(--bs-gutter-x)/ 2);
+	padding-left: calc(var(--bs-gutter-x)/ 2);
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+	width: min(75%, 250px);
+	height: auto;
+	margin-left: max(12.5%, calc(50% - 125px));
+	margin-right: max(12.5%, calc(50% - 125px));
 }

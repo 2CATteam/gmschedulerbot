@@ -560,7 +560,7 @@ class calendar {
 	//Constructor takes the DOM parent, whether to include the text input
 	// (Always yes for this project, may be no in the future),
 	// date to initially display, and the mode (Single or multiple)
-	constructor(parent, includeString, date, mode) {
+	constructor(parent, includeString, date, mode, interactive) {
 		//Save jQuery parent object
 		this.parent = $(parent)
 		//Initial HTML to add
@@ -596,6 +596,8 @@ class calendar {
 		this.displayDate = moment(this.date)
 		//Set mode to supplied mode, or single if none
 		this.mode = mode ? mode : "single"
+		//Set interactive to supplied value, or true if none
+		this.interactive = interactive == undefined ? true : undefined
 
 		//Create grid of buttons
 		this.buildGrid(date)
@@ -654,7 +656,7 @@ class calendar {
 		for (var i = 0; i < 6; i++) {
 			let row = $('<div class="d-flex flex-nowrap"></div>')
 			for (var j = 0; j < 7; j++) {
-				let cell = $(`<button class="rounded-0 m-0 py-1 equalWidth text-center silentButton">${i * 7 + j}</btn>`)
+				let cell = $(`<button class="rounded-0 m-0 py-1 equalWidth text-center silentButton"${this.interactive ? "" : ' style="cursor: default;"'}>${i * 7 + j}</btn>`)
 				row.append(cell)
 			}
 			this.parent.find(".calendarGrid").append(row)
@@ -698,36 +700,38 @@ class calendar {
 				} else {
 					cell.removeClass("buttonSelected")
 				}
-				//Remove listeners
-				cell.off()
-				//Add click listeners bound to select this day
-				cell.mousedown({date: toSet, parent: this, x: j, y: i}, function(evt) {
-					//If disabled, ignore
-					if ($(this).prop("disabled")) return
-					//If in multiple mode and this is selected, unselect it. If it's not selected, select it.
-					if (evt.data.parent.mode == "multiple") {
-						if (evt.data.parent.hasDate(evt.data.date)) {
-							evt.data.parent.removeDate(evt.data.date)
+				if (this.interactive) {
+					//Remove listeners
+					cell.off()
+					//Add click listeners bound to select this day
+					cell.mousedown({date: toSet, parent: this, x: j, y: i}, function(evt) {
+						//If disabled, ignore
+						if ($(this).prop("disabled")) return
+						//If in multiple mode and this is selected, unselect it. If it's not selected, select it.
+						if (evt.data.parent.mode == "multiple") {
+							if (evt.data.parent.hasDate(evt.data.date)) {
+								evt.data.parent.removeDate(evt.data.date)
+							} else {
+								evt.data.parent.addDate(evt.data.date)
+							}
 						} else {
-							evt.data.parent.addDate(evt.data.date)
+							//If in single mode, set the selected date to this
+							evt.data.parent.setDate(evt.data.date)
 						}
-					} else {
-						//If in single mode, set the selected date to this
-						evt.data.parent.setDate(evt.data.date)
-					}
-				})
-				//If hovered while button is being held in multiple mode, toggle select
-				//Allows for quickly selecting multiple close days
-				cell.hover((evt) => {
-					if (this.mode == "single") return
-					if (evt.buttons == 1) {
-						if (this.hasDate(toSet)) {
-							this.removeDate(toSet)
-						} else {
-							this.addDate(toSet)
+					})
+					//If hovered while button is being held in multiple mode, toggle select
+					//Allows for quickly selecting multiple close days
+					cell.hover((evt) => {
+						if (this.mode == "single") return
+						if (evt.buttons == 1) {
+							if (this.hasDate(toSet)) {
+								this.removeDate(toSet)
+							} else {
+								this.addDate(toSet)
+							}
 						}
-					}
-				}, (evt) => {}) //The second listener is useless, but keeps the first from double-firing. Thanks, jQuery!
+					}, (evt) => {}) //The second listener is useless, but keeps the first from double-firing. Thanks, jQuery!
+				}
 
 				//Set the cell text
 				cell.text(toSet.date())
@@ -739,7 +743,9 @@ class calendar {
 				} else {
 					//Else reset it
 					cell.removeClass("disabledButton")
-					cell.prop("disabled", false)
+					if (this.interactive) {
+						cell.prop("disabled", false)
+					}
 					//If this has a filter function and this is before the selected date, it's going to have a message sent, so reflect that by turning green. Else reset that
 					if (this.filterFunction && toSet < this.date) {
 						cell.addClass("historyButton")
@@ -1129,4 +1135,5 @@ function mouseDrag(evt) {
 	}
 }
 
-//<-- I can't believe I wrote this many lines of code for this project, WOW. Please be proud of me
+//<-- I can't believe I wrote this many lines of code
+// for this project, WOW. Please be proud of me

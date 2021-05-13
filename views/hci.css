@@ -37,7 +37,11 @@
 	border: 2px solid LightGray;
 }
 
-.hoursButton, .minuteButton, .amPmButton {
+.hoursButton, .minutesButton {
+	cursor: text !important;
+}
+
+.hoursButton, .minutesButton, .amPmButton {
 	height: 100%;
 }
 
