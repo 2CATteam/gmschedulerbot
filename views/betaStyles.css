@@ -87,7 +87,7 @@ table {
 	max-width: 1200px;
 }
 
-@media only screen and (min-width: 1000px) and (max-height: 1100px)
+@media only screen and (min-width: 1000px)
 {
 	#MainBody {
 		margin: 25px 15% 25px 15%;
@@ -97,7 +97,7 @@ table {
 	}
 }
 
-@media only screen and (min-width: 1500px) and (max-height: 1100px)
+@media only screen and (min-width: 1500px)
 {
 	#MainBody {
 		margin: 25px 20% 25px 20%;
@@ -182,4 +182,11 @@ img {
 	height: auto;
 	margin-left: max(12.5%, calc(50% - 125px));
 	margin-right: max(12.5%, calc(50% - 125px));
+}
+
+@media only screen and (min-width: 768px)
+{
+	.cardLeftCol {
+		border-right: 1px solid lightgray;
+	}
 }

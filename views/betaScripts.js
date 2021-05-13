@@ -193,7 +193,7 @@ function updateMessages() {
 		let tempDate = new Date(messages[x].next)
 		let element = `<div class="card container-fluid subDiv py-3 mt-4">
 			<div class="py-3 row gy-4">
-				<div class="col-md">
+				<div class="col-md cardLeftCol">
 					<p class="text-center"><b>Chat: </b></p>
 					<p>${groupNameFromMessage(x)}</p>
 					<p class="text-center" ${messages[x].toSend ? "" : 'style="display: none;"'}><strong>Message:</strong></p>
@@ -201,11 +201,11 @@ function updateMessages() {
 					${messages[x].image ? '<p class="text-center"><strong>Image: </strong></p><img src="' + messages[x].image + '" alt="' + messages[x].image + '">' : ""}
 				</div>
 				<div class="col-md">
-					<p class="text-left text-md-center"><strong>Date(s):</strong></p>
+					<p class="text-center"><strong>Date(s):</strong></p>
 					<div class="calendarContainer container-md">
 						<div class="calendarDisplay my-3"></div>
 					</div>
-					<p class="text-left text-md-center"><strong>Time: </strong><br/>${tempDate.toLocaleTimeString()}</p>
+					<p class="text-center"><strong>Time: </strong><br/>${tempDate.toLocaleTimeString()}</p>
 				</div>
 			</div>
 			<div class="row justify-content-around g-3 gx-5">
