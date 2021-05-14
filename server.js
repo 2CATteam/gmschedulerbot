@@ -205,7 +205,7 @@ app.post('/uploadImage/?', (req, res) => {
 			return
 		}
 		try {
-			let url = await sender.uploadImage(path, req.cookies.token)			
+			let url = await sender.uploadImage(path, req.cookies.token)
 			res.writeHead(200, { 'Content-Type': 'application/json' })
 			res.end(JSON.stringify({ status: 'success', path: url }))
 		} catch (err) {
