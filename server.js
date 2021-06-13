@@ -26,25 +26,31 @@ app.use(fileupload());
 //Normal website just gives normal screen
 app.get('/', (req, res) =>
 {
-	res.sendFile(path.join(__dirname + '/views/baseView.html'))
+	res.sendFile(path.join(__dirname + '/views/mainView.html'))
 });
 
 //HCI redirects to beta, because I made the mistake of naming the beta page HCI at first
 app.get('/hci', (req, res) =>
 {
-	res.redirect("/beta");
+	res.redirect("/");
 });
 
 //Beta website gives new beta page!
 app.get('/beta', (req, res) =>
 {
-	res.sendFile(path.join(__dirname + '/views/betaView.html'))
+	res.redirect("/");
 });
 
 //Fallback website just gives fallback screen
 app.get('/fallback', (req, res) =>
 {
 	res.sendFile(path.join(__dirname + '/views/fallbackView.html'))
+});
+
+//Legacy view
+app.get('/legacy', (req, res) =>
+{
+	res.sendFile(path.join(__dirname + '/views/legacyView.html'))
 });
 
 //Authentication just adds a cookie and then redirects
@@ -78,10 +84,10 @@ app.get('/summary/authenticate/?', (req, res) =>
 });
 
 //Authentication just adds a cookie and then redirects
-app.get('/hci/authenticate/?', (req, res) =>
+app.get('/legacy/authenticate/?', (req, res) =>
 {
 	res.cookie('token', req.query.access_token, {maxAge: 604800000});
-	res.redirect("/beta/");
+	res.redirect("/legacy/");
 });
 
 //Authentication just adds a cookie and then redirects
