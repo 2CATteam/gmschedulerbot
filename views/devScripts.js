@@ -124,14 +124,16 @@ function getMembers() {
 					resolve(data.response.members)
 				})
 		} else {
-			$.get(`https://api.groupme.com/v3/chats?limit=100&token=${getCookie("token")}`)
+			$.get(`https://api.groupme.com/v3/chats?per_page=100&token=${getCookie("token")}`)
 				.done((data, status, xhr) => {
 					if (xhr.status != 200) {
 						console.error(xhr)
 						reject(status)
 					}
 					let other_user_id = $("#dmSelect").val()
+					console.error(other_user_id)
 					for (let i in data.response) {
+						console.log(data.response[i].other_user.id)
 						if (data.response[i].other_user.id == other_user_id) {
 							resolve([data.response[i].other_user, {name: my_name, id: my_id}])
 						}
@@ -166,7 +168,7 @@ function startTable() {
 			let html = `<tr>
 				<td>${date.toLocaleDateString()} ${date.toLocaleTimeString()}</td>
 				<td>${data[i].name}</td>
-				<td style="whitespace: pre;">${text}</td>
+				<td style="white-space: pre-wrap;">${text}</td>
 				<td>${data[i].id}</td>
 				<td>${data[i].user_id}</td>
 			</tr>`
