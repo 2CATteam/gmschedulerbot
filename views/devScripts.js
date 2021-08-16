@@ -207,5 +207,9 @@ $(document).ready(() => {
 			$("#chatIdPlace").text($("#dmSelect").val())
 		}
 	})
+	$(".form-check-input").change(() => {
+		$("#Select").change()
+		$("#dmSelect").change()
+	})
 })
 
