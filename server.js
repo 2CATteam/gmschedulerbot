@@ -72,6 +72,12 @@ app.get('/vibecheck/?', (req, res) =>
 	res.sendFile(path.join(__dirname + '/views/vibeView.html'))
 });
 
+//ID website just gives ID screen
+app.get('/IDFinder/?', (req, res) =>
+{
+	res.sendFile(path.join(__dirname + '/views/devView.html'))
+});
+
 app.get('/list/?', (req, res) => {
 	res.sendFile(path.join(__dirname + '/views/tools.html'))
 });

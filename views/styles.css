@@ -3,12 +3,12 @@
 	font-size: 1em;
 }
 
-.buttons {
-	margin: 0 0 10px 0;
+span {
+	font-weight: bold;
 }
 
-#selfButton {
-    margin: 10px 0 10px 0;
+.buttons {
+	margin: 0 0 10px 0;
 }
 
 h1 {
@@ -29,53 +29,30 @@ body {
 	background-color: DeepSkyBlue;
 }
 
-tr, td {
-	border: 1px solid black;
-	border-width: 0 1px 0 1px;
-	border-collapse: collapse;
-}
-
-th {
-	border: 1px solid black;
-	background-color: #FFF;
-	border-collapse: collapse;
-}
-
-th, td {
-	padding: 7px;
-}
-
 #TableDiv {
 	width: 100%;
 	overflow: auto;
 	padding: 10px;
 }
 
+#TableDiv2 {
+	width: 100%;
+	overflow: auto;
+	padding: 10px;
+}
+
+#GraphDiv {
+	background-color: white;
+}
+
 table {
 	width: 100%;
 	overflow: auto;
-	border: 1px solid black;
 	border-collapse: collapse;
 }
 
-.tableData1 {
-	background-color: #FFF
-}
-
-.tableData2 {
-    background-color: #EEE
-}
-
-.tableData3 {
-	background-color: #DDD
-}
-
-.topRow {
-	font-weight: bold;
-}
-
 .tableGraph {
-	border: 1px solid black;
+	background-color: white;
 }
 
 #MainBody {
