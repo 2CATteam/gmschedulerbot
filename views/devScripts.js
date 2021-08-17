@@ -147,7 +147,7 @@ function getMembers() {
 function startTable() {
 	$("table tr:not(:first-child)").remove()
 	getMembers().then((data) => {
-		data.sort((a, b) => a.localeCompare(b))
+		data.sort((a, b) => (a.nickname ?? a.name)?.localeCompare(b.nickname ?? b.name))
 		for (let i in data) {
 			let html = `<tr>
 				<td>${data[i].nickname ?? data[i].name}</td>
