@@ -103,6 +103,13 @@ app.get('/vibecheck/authenticate/?', (req, res) =>
 	res.redirect("/vibecheck/");
 });
 
+//Authentication just adds a cookie and then redirects
+app.get('/IDFinder/authenticate/?', (req, res) =>
+{
+	res.cookie('token', req.query.access_token, {maxAge: 604800000});
+	res.redirect("/IDFinder/");
+});
+
 //FAQ view
 app.get('/faq/', (req, res) =>
 {
