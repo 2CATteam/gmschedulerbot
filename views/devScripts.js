@@ -31,6 +31,7 @@ function updateBasedOnToken() {
 		$("#selfIdPlace").text(my_id)
 		
 		populateDropdowns()
+		slashMe()
 		
 		document.getElementById("completionLocation").innerHTML = "Authentication was a success! You can now select a chat or DM.";
 	};
@@ -176,6 +177,17 @@ function startTable() {
 			$("#messagesTable tr").eq(0).after(html)
 		}
 	})
+}
+
+function slashMe() {
+	$.get(`https://api.groupme.com/v3/users/me?token=${getCookie("token")}`)
+		.done((data, status, xhr) => {
+			if (xhr.status != 200) {
+				console.error(xhr)
+				reject(status)
+			}
+			$("#codeBlock").text(JSON.stringify(data.response, null, "\t"))
+		})
 }
 
 function getCookie(key) {
