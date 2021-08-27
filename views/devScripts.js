@@ -136,7 +136,8 @@ function getMembers() {
 					for (let i in data.response) {
 						console.log(data.response[i].other_user.id)
 						if (data.response[i].other_user.id == other_user_id) {
-							resolve([data.response[i].other_user, {name: my_name, id: my_id}])
+							data.response[i].other_user.user_id = data.response[i].other_user.id
+							resolve([data.response[i].other_user, {name: my_name, id: my_id, user_id: my_id}])
 						}
 					}
 					reject("Could not find DM")
@@ -152,6 +153,7 @@ function startTable() {
 		for (let i in data) {
 			let html = `<tr>
 				<td>${data[i].nickname ?? data[i].name}</td>
+				<td>${data[i].user_id}</td>
 				<td>${data[i].id}</td>
 			</tr>`
 			$("#membersTable").append(html)
