@@ -29,6 +29,7 @@ function updateBasedOnToken() {
 		my_name = data.name
 
 		$("#selfIdPlace").text(my_id)
+		$("#selfTokenPlace").text(getCookie("token"))
 		
 		populateDropdowns()
 		slashMe()
@@ -165,7 +166,7 @@ function startTable() {
 			for (let j in data[i].attachments) {
 				if (data[i].attachments[j].type === "image") {
 					text += "\n\n"
-					text += data[i].attachments[j].image_url
+					text += data[i].attachments[j].url
 				}
 			}
 			let date = new Date(data[i].created_at * 1000) 

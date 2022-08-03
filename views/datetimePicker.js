@@ -231,7 +231,7 @@ class dateTimePicker {
 				})
 			case "multiple":
 				//Calendar takes care of this one for us, just sort them and set times
-				let dates = this.firstCalendar.dates.sort(function(a, b) {
+				let dates = this.firstCalendar.dates.slice(0).sort(function(a, b) {
 					return a - b
 				})
 				//Set times

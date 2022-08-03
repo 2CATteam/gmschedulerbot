@@ -16,7 +16,8 @@ var sender = require('./lib/MessageSender');
 var schedulerFile = require('./lib/MessageScheduler');
 var scheduler = new schedulerFile();
 
-var hits = 0;
+let hits = 0;
+let hitsCounter = new Date().valueOf();
 
 app.use(cookieParser());
 app.use(express.static(__dirname + '/views'));
@@ -26,30 +27,45 @@ app.use(fileupload());
 //Normal website just gives normal screen
 app.get('/', (req, res) =>
 {
+	hits++;
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
 	res.sendFile(path.join(__dirname + '/views/mainView.html'))
 });
 
 //HCI redirects to beta, because I made the mistake of naming the beta page HCI at first
 app.get('/hci', (req, res) =>
 {
+	hits++;
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
 	res.redirect("/");
 });
 
 //Beta website gives new beta page!
 app.get('/beta', (req, res) =>
 {
+	hits++;
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
 	res.redirect("/");
 });
 
 //Fallback website just gives fallback screen
 app.get('/fallback', (req, res) =>
 {
+	hits++;
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
 	res.sendFile(path.join(__dirname + '/views/fallbackView.html'))
 });
 
 //Legacy view
 app.get('/legacy', (req, res) =>
 {
+	hits++;
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
 	res.sendFile(path.join(__dirname + '/views/legacyView.html'))
 });
 
@@ -63,22 +79,30 @@ app.get('/authenticate/?', (req, res) =>
 //Summary website just gives summary screen
 app.get('/summary/?', (req, res) =>
 {
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
 	res.sendFile(path.join(__dirname + '/views/summaryView.html'))
 });
 
 //Summary website just gives summary screen
 app.get('/vibecheck/?', (req, res) =>
 {
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
 	res.sendFile(path.join(__dirname + '/views/vibeView.html'))
 });
 
 //ID website just gives ID screen
 app.get('/IDFinder/?', (req, res) =>
 {
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
 	res.sendFile(path.join(__dirname + '/views/devView.html'))
 });
 
 app.get('/list/?', (req, res) => {
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
 	res.sendFile(path.join(__dirname + '/views/tools.html'))
 });
 
@@ -154,8 +178,6 @@ app.post('/getInfo/', (req, res) =>
 
 //Adds messages to be sent to the list
 app.post('/submitMessage/', (req, res) => {
-	hits++;
-	console.log(hits)
 	var info = "";
 	req.on('data', (chunk) => {
 		info += chunk;

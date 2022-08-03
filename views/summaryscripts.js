@@ -117,8 +117,8 @@ function fillTable() {
 	<td class="topRow">${att}</td>
 	<td class="topRow">${likes}</td>
 	<td class="topRow">${liked}</td>
-	<td class="topRow">${Math.round(length / sent * 10) / 10}</td>
-	<td class="topRow">${Math.round(likes / sent * 100) / 100}</td>
+	<td class="topRow">${sent ? Math.round(length / sent * 10) / 10 : "N/A"}</td>
+	<td class="topRow">${sent ? Math.round(likes / sent * 100) / 100 : "N/A"}</td>
 </tr>`
 		let headElement = $(header)
 		$("table").append(headElement)
@@ -131,8 +131,8 @@ function fillTable() {
 	<td>${summary[order[i]].attachments}</td>
 	<td>${summary[order[i]].likes}</td>
 	<td>${summary[order[i]].liked}</td>
-	<td>${Math.round((summary[order[i]].textLength) / (summary[order[i]].sent) * 10) / 10}</td>
-	<td>${Math.round(summary[order[i]].likes/summary[order[i]].sent * 100) / 100}</td>
+	<td>${summary[order[i]].sent ? Math.round((summary[order[i]].textLength) / (summary[order[i]].sent) * 10) / 10 : "N/A"}</td>
+	<td>${summary[order[i]].sent ? Math.round(summary[order[i]].likes/summary[order[i]].sent * 100) / 100 : "N/A"}</td>
 </tr>`
 		let element = $(row)
 		$("table").append(element)
