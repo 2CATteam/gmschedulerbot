@@ -172,7 +172,8 @@ async function mainLoop(all, progress, numChats) {
 			return;
 		}
 		showProgress(`${all ? "Chat " + progress + "/" + numChats + ": ": ""}${args.messagesDone}/${aggregate.count} messages downloaded`)
-		loop = await getMessages(all)
+		await getMessages(all)
+		loop = args.messagesDone < aggregate.count
 	}
 }
 
