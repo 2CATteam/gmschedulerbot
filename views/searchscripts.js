@@ -130,6 +130,7 @@ async function startAgg() {
 	else {
 		if ($("#chatButton").prop("checked")) {
 			args.state = 1
+			search_regex = new RegExp($("#searchQuery").value, "igm")
 			await getUsers()
 			await mainLoop(false)
 			showProgress(`Messages downloaded, parsing data...`)
