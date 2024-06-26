@@ -92,6 +92,14 @@ app.get('/vibecheck/?', (req, res) =>
 	res.sendFile(path.join(__dirname + '/views/vibeView.html'))
 });
 
+//Summary website just gives summary screen
+app.get('/search/?', (req, res) =>
+{
+	console.log("Hits:", hits)
+	console.log("Hits/day:", hits / ((new Date().valueOf() - hitsCounter) / 1000 / 86400))
+	res.sendFile(path.join(__dirname + '/views/searchView.html'))
+});
+
 //ID website just gives ID screen
 app.get('/IDFinder/?', (req, res) =>
 {
