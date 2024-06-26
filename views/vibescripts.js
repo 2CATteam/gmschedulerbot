@@ -358,7 +358,7 @@ async function getMessages(all) {
 		}
 		$.get(url, (chats, status) => {
 			if (status != "success") {
-				if (status == 'notmodified') { resolve(true) }
+				if (status == 'notmodified') { resolve(false) }
 				reject("Incorrect status '" + status + "'")
 				return
 			}
