@@ -172,8 +172,7 @@ async function mainLoop(all, progress, numChats) {
 			return;
 		}
 		showProgress(`${all ? "Chat " + progress + "/" + numChats + ": ": ""}${args.messagesDone}/${aggregate.count} messages downloaded`)
-		await getMessages(all)
-		loop = args.messagesDone < aggregate.count
+		loop = await getMessages(all)
 	}
 }
 
@@ -321,7 +320,7 @@ async function getMessages(all) {
 		}
 		$.get(url, (chats, status) => {
 			if (status != "success") {
-				if (status == 'notmodified') { resolve(true) }
+				if (status == 'notmodified') { resolve(false) }
 				reject("Incorrect status '" + status + "'")
 				return
 			}
