@@ -142,7 +142,7 @@ async function startAgg() {
 			aggregate.members = {}
 			aggregate[args.id] = args.name
 			const numChats = $("#Select").children().length
-			search_regex = new RegExp($("#searchQuery").value(), "igm")
+			search_regex = new RegExp($("#searchQuery").value, "igm")
 			for (var i = 0; i < $("#Select").children().length; i++) {
 				args.group_id = $("#Select").children()[i].value
 				args.last = undefined
