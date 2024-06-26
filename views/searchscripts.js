@@ -130,7 +130,7 @@ async function startAgg() {
 	else {
 		if ($("#chatButton").prop("checked")) {
 			args.state = 1
-			search_regex = new RegExp($("#searchQuery").value, "igm")
+			search_regex = new RegExp($("#searchQuery").val(), "igm")
 			await getUsers()
 			await mainLoop(false)
 			showProgress(`Messages downloaded, parsing data...`)
@@ -143,7 +143,7 @@ async function startAgg() {
 			aggregate.members = {}
 			aggregate[args.id] = args.name
 			const numChats = $("#Select").children().length
-			search_regex = new RegExp($("#searchQuery").value, "igm")
+			search_regex = new RegExp($("#searchQuery").val(), "igm")
 			for (var i = 0; i < $("#Select").children().length; i++) {
 				args.group_id = $("#Select").children()[i].value
 				args.last = undefined
@@ -222,7 +222,7 @@ function showGraph(event) {
 		data: {
 			datasets: [{
 				type: 'line',
-				label: 'Positivity (rolling average)',
+				label: 'Uses (rolling average)',
 				pointRadius: 1,
 				borderWidth: 3,
 				fill: false,
